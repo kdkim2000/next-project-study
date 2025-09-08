@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+
+# 사이트맵 위치 (나중에 추가할 때 사용)
+# Sitemap: https://johndoe-portfolio.vercel.app/sitemap.xml
+
+# 크롤링하지 않을 경로들
+Disallow: /_next/
+Disallow: /api/
+Disallow: *.json
+Disallow: *.xml
+
+# 주요 페이지들 (검색엔진 최적화)
+Allow: /
+Allow: /about
+Allow: /projects
+Allow: /contact

@@ -272,11 +272,25 @@ if ('serviceWorker' in navigator) {
 
 ## 🚀 다음 단계 학습 과제
 
+### 초급자 → 중급자
+1. **커스텀 훅 만들기**: `useWeatherData` 훅을 직접 구현해보세요
+2. **useReducer 연습**: 복잡한 상태 로직을 useReducer로 리팩터링
+3. **성능 최적화**: React.memo와 useMemo로 불필요한 리렌더링 제거
+4. **에러 바운더리**: 에러 처리를 위한 Error Boundary 구현
+
+### 중급자 → 고급자
 1. **상태 관리 라이브러리**: Redux Toolkit 또는 Zustand 도입
 2. **테스팅**: Jest와 React Testing Library로 테스트 작성
-3. **성능 최적화**: React.memo, useMemo 활용
+3. **타입스크립트 고급**: Generic, Utility Types, Conditional Types 활용
 4. **접근성**: ARIA 속성과 키보드 네비게이션 개선
 5. **국제화**: react-i18next로 다국어 지원
+
+### 고급자 → 전문가
+1. **마이크로 프론트엔드**: Module Federation 적용
+2. **서버사이드 렌더링**: Next.js SSR/SSG 최적화
+3. **모니터링**: Sentry, 성능 모니터링 도구 연동
+4. **CI/CD**: GitHub Actions로 자동 배포 구축
+5. **고급 패턴**: Compound Components, Render Props 패턴 구현
 
 ## 💡 문제 해결 가이드
 

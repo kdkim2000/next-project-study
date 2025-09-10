@@ -20,19 +20,23 @@ import WeatherSearch from '@/components/WeatherSearch';
 import CurrentWeather from '@/components/CurrentWeather';
 import ForecastCards from '@/components/ForecastCards';
 import WeatherChart from '@/components/WeatherChart';
+import WeatherSummary from '@/components/WeatherSummary';
+import RealTimeUpdater from '@/components/RealTimeUpdater';
+import NotificationSystem from '@/components/NotificationSystem';
 
 // 유틸리티 함수들 import
 import { getCurrentWeather, getWeatherForecast, WeatherAPIError } from '@/utils/api';
 import { 
   cacheWeatherData, 
   getCachedWeatherData, 
-  setLastLocation 
+  setLastLocation,
+  getLastLocation 
 } from '@/utils/storage';
 
 // 타입 import
 import type { WeatherData, WeatherForecast } from '@/types/weather';
 
-export default function WeatherDashboard() {
+function WeatherDashboard() {
   // 상태 관리
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const [forecastData, setForecastData] = useState<WeatherForecast | null>(null);
@@ -42,19 +46,28 @@ export default function WeatherDashboard() {
   const [lastUpdateTime, setLastUpdateTime] = useState<Date | null>(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [hasInitialLoaded, setHasInitialLoaded] = useState(false);
 
-  // 실시간 업데이트를 위한 인터벌 ID
-  const [updateInterval, setUpdateInterval] = useState<NodeJS.Timeout | null>(null);
+  // 컴포넌트 마운트 시 마지막 위치 한 번만 로드
+  useEffect(() => {
+    if (!hasInitialLoaded) {
+      const lastLocation = getLastLocation();
+      if (lastLocation) {
+        setHasInitialLoaded(true);
+        handleLocationSelect(lastLocation);
+      }
+    }
+  }, [hasInitialLoaded]);
 
   // 날씨 데이터를 가져오는 함수
-  const fetchWeatherData = useCallback(async (location: string, useCache: boolean = true) => {
-    if (!location.trim()) return;
+  const fetchWeatherData = async (location: string, useCache: boolean = true) => {
+    if (!location.trim() || loading) return;
 
     setLoading(true);
     setError(null);
 
     try {
-      // 캐시된 데이터 확인 (useCache가 true일 때만)
+      // 캐시된 데이터 확인
       if (useCache) {
         const cachedData = getCachedWeatherData(location);
         if (cachedData) {
@@ -63,22 +76,24 @@ export default function WeatherDashboard() {
           setLastUpdateTime(new Date());
           setSnackbarMessage('캐시된 데이터를 로드했습니다.');
           setSnackbarOpen(true);
+          setLoading(false);
+          return;
         }
       }
 
-      // 현재 날씨와 예보 데이터를 동시에 가져오기
+      // API에서 데이터 가져오기
       const [currentWeatherResponse, forecastResponse] = await Promise.all([
         getCurrentWeather(location),
-        getWeatherForecast(location)
+        getWeatherForecast(location, 3)
       ]);
 
-      // 데이터 설정
+      // 상태 업데이트
       setWeatherData(currentWeatherResponse);
       setForecastData(forecastResponse);
       setCurrentLocation(location);
       setLastUpdateTime(new Date());
 
-      // 데이터 캐싱
+      // 데이터 캐싱 및 저장
       cacheWeatherData(location, currentWeatherResponse);
       setLastLocation(location);
 
@@ -97,48 +112,44 @@ export default function WeatherDashboard() {
     } finally {
       setLoading(false);
     }
-  }, []);
-
-  // 자동 새로고침 설정 (10분마다)
-  useEffect(() => {
-    if (currentLocation && weatherData) {
-      // 기존 인터벌 제거
-      if (updateInterval) {
-        clearInterval(updateInterval);
-      }
-
-      // 새로운 인터벌 설정 (10분 = 600,000ms)
-      const interval = setInterval(() => {
-        fetchWeatherData(currentLocation, false); // 캐시 사용 안함
-      }, 10 * 60 * 1000);
-
-      setUpdateInterval(interval);
-
-      // 컴포넌트 언마운트 시 인터벌 제거
-      return () => {
-        if (interval) {
-          clearInterval(interval);
-        }
-      };
-    }
-  }, [currentLocation, weatherData, fetchWeatherData]);
-
-  // 수동 새로고침 함수
-  const handleRefresh = () => {
-    if (currentLocation) {
-      fetchWeatherData(currentLocation, false); // 캐시 사용 안함
-    }
   };
 
   // 위치 선택 핸들러
-  const handleLocationSelect = (location: string) => {
-    fetchWeatherData(location, true); // 캐시 사용
-  };
+  const handleLocationSelect = useCallback((location: string) => {
+    fetchWeatherData(location, true);
+  }, []);
 
-  // 스낵바 닫기 핸들러
-  const handleSnackbarClose = () => {
+  // 수동 새로고침
+  const handleRefresh = useCallback(() => {
+    if (currentLocation) {
+      fetchWeatherData(currentLocation, false);
+    }
+  }, [currentLocation]);
+
+  // 실시간 업데이트 핸들러
+  const handleRealTimeUpdate = useCallback(() => {
+    if (currentLocation) {
+      fetchWeatherData(currentLocation, false);
+    }
+  }, [currentLocation]);
+
+  // 스낵바 닫기
+  const handleSnackbarClose = useCallback(() => {
     setSnackbarOpen(false);
-  };
+  }, []);
+
+  // 자동 새로고침 (15분마다)
+  useEffect(() => {
+    if (!currentLocation) return;
+
+    const interval = setInterval(() => {
+      if (currentLocation) {
+        fetchWeatherData(currentLocation, false);
+      }
+    }, 15 * 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, [currentLocation]);
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
@@ -148,7 +159,7 @@ export default function WeatherDashboard() {
           Weather Dashboard Pro
         </Typography>
         <Typography variant="h6" color="text.secondary">
-          실시간 날씨 정보와 7일 예보를 확인하세요
+          실시간 날씨 정보와 3일 예보를 확인하세요
         </Typography>
         {lastUpdateTime && (
           <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
@@ -157,8 +168,36 @@ export default function WeatherDashboard() {
         )}
       </Box>
 
+      {/* API 키 설정 안내 */}
+      {!process.env.NEXT_PUBLIC_WEATHER_API_KEY && (
+        <Alert severity="warning" sx={{ mb: 3 }}>
+          <Typography variant="h6" gutterBottom>
+            API 키가 설정되지 않았습니다
+          </Typography>
+          <Typography variant="body2">
+            1. <strong>WeatherAPI.com</strong>에서 무료 계정을 생성하세요<br/>
+            2. API 키를 발급받으세요<br/>
+            3. 프로젝트 루트에 <code>.env.local</code> 파일을 생성하고 다음을 추가하세요:<br/>
+            <code>NEXT_PUBLIC_WEATHER_API_KEY=your_api_key_here</code><br/>
+            4. 개발 서버를 재시작하세요: <code>npm run dev</code>
+          </Typography>
+        </Alert>
+      )}
+
       {/* 검색 컴포넌트 */}
       <WeatherSearch onLocationSelect={handleLocationSelect} loading={loading} />
+
+      {/* 실시간 업데이트 컨트롤 */}
+      {weatherData && (
+        <RealTimeUpdater 
+          onUpdate={handleRealTimeUpdate}
+          lastUpdateTime={lastUpdateTime}
+          loading={loading}
+        />
+      )}
+
+      {/* 알림 시스템 */}
+      <NotificationSystem weatherData={weatherData} />
 
       {/* 에러 표시 */}
       {error && (
@@ -167,7 +206,17 @@ export default function WeatherDashboard() {
           sx={{ mb: 3 }} 
           onClose={() => setError(null)}
         >
-          {error}
+          <Typography variant="subtitle2" gutterBottom>
+            오류가 발생했습니다
+          </Typography>
+          <Typography variant="body2">
+            {error}
+          </Typography>
+          {error.includes('API 키') && (
+            <Typography variant="body2" sx={{ mt: 1, fontWeight: 'bold' }}>
+              💡 위의 API 키 설정 안내를 확인해주세요.
+            </Typography>
+          )}
         </Alert>
       )}
 
@@ -184,15 +233,17 @@ export default function WeatherDashboard() {
           {/* 현재 날씨 */}
           <CurrentWeather weatherData={weatherData} />
 
-          {/* 일기예보 카드 */}
+          {/* 일기예보 및 차트 */}
           {forecastData && (
             <>
+              {/* 일기예보 카드 */}
               <ForecastCards forecastData={forecastData.forecast.forecastday} />
               
+              {/* 날씨 요약 통계 */}
+              <WeatherSummary forecastData={forecastData.forecast.forecastday} />
+              
               {/* 날씨 차트 */}
-              <Box sx={{ mt: 3 }}>
-                <WeatherChart forecastData={forecastData.forecast.forecastday} />
-              </Box>
+              <WeatherChart forecastData={forecastData.forecast.forecastday} />
             </>
           )}
         </>
@@ -227,3 +278,5 @@ export default function WeatherDashboard() {
     </Container>
   );
 }
+
+export default WeatherDashboard;

@@ -1,0 +1,38 @@
+// prisma/schema.prisma - 데이터베이스 스키마 정의
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+// 할 일 항목을 저장하는 테이블
+model Task {
+  id          String   @id @default(cuid()) // 고유 식별자
+  title       String   // 할 일 제목
+  description String?  // 할 일 상세 설명 (선택사항)
+  priority    Priority @default(MEDIUM) // 우선순위 (높음/중간/낮음)
+  status      Status   @default(TODO) // 상태 (할 일/진행중/완료)
+  dueDate     DateTime? // 마감일 (선택사항)
+  createdAt   DateTime @default(now()) // 생성일시
+  updatedAt   DateTime @updatedAt // 최종 수정일시
+  order       Int      @default(0) // 드래그앤드롭을 위한 순서
+
+  @@map("tasks") // 데이터베이스 테이블명
+}
+
+// 우선순위 열거형
+enum Priority {
+  LOW    // 낮음
+  MEDIUM // 중간
+  HIGH   // 높음
+}
+
+// 상태 열거형
+enum Status {
+  TODO        // 할 일
+  IN_PROGRESS // 진행중
+  COMPLETED   // 완료
+}

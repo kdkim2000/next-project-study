@@ -1,0 +1,65 @@
+// prisma/schema.prisma - SQLite에 최적화된 데이터베이스 스키마 정의
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// SQLite 데이터베이스 설정
+// 파일 DB로 개발과 배포가 간단하며, 소규모 애플리케이션에 적합
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// 제품 카테고리 모델
+model Category {
+  id          String    @id @default(cuid())
+  name        String    @unique // SQLite에서 인덱스 최적화
+  description String?
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("categories") // 테이블명 명시적 지정
+}
+
+// 제품 모델
+model Product {
+  id          String     @id @default(cuid())
+  name        String
+  description String
+  price       Float      // SQLite에서 REAL 타입으로 저장
+  stock       Int        // INTEGER 타입
+  images      String     // JSON 문자열로 저장 (SQLite는 JSON 타입 미지원)
+  categoryId  String
+  category    Category   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  featured    Boolean    @default(false)
+  rating      Float      @default(0.0)
+  reviewCount Int        @default(0)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  cartItems   CartItem[] // 관계 추가
+
+  // SQLite 성능 최적화를 위한 인덱스
+  @@index([categoryId])
+  @@index([featured])
+  @@index([price])
+  @@index([createdAt])
+  @@map("products")
+}
+
+// 장바구니 아이템 모델
+model CartItem {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  quantity  Int
+  sessionId String   // 사용자 세션 ID
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // 복합 인덱스로 성능 최적화
+  @@index([sessionId])
+  @@index([productId])
+  @@map("cart_items")
+}

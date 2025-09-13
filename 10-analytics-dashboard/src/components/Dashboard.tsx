@@ -1,37 +1,46 @@
-// src/components/Dashboard.tsx - 메인 대시보드 (Grid v2 + 고유 key 적용)
+// src/components/Dashboard.tsx - MUI Grid v2 문법으로 수정
 'use client';
 
 import React from 'react';
-import { Box, Container, Typography, Grid } from '@mui/material';
+import { Box, Container, Typography } from '@mui/material';
+import Grid from '@mui/material/Grid'; // Grid v2 import
 import MetricCard from './MetricCard';
 import SimpleChart from './SimpleChart';
+import PerformanceMonitor from './PerformanceMonitor';
+import ExportButtons from './ExportButtons';
 import { metricsData, chartData, pieData } from '@/data/sampleData';
 
 export default function Dashboard() {
   return (
-    <Container maxWidth="xl" sx={{ py: 4 }}>
-      {/* 헤더 */}
-      <Box mb={4}>
-        <Typography variant="h3" component="h1" fontWeight="bold" gutterBottom>
-          Analytics Dashboard Pro
-        </Typography>
-        <Typography variant="h6" color="text.secondary">
-          실시간 비즈니스 인사이트 대시보드
-        </Typography>
+    <Container maxWidth="xl" sx={{ py: 4 }} id="dashboard-container">
+      {/* 헤더 + 내보내기 버튼 */}
+      <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={4}>
+        <Box>
+          <Typography variant="h3" component="h1" fontWeight="bold" gutterBottom>
+            Analytics Dashboard Pro
+          </Typography>
+          <Typography variant="h6" color="text.secondary">
+            실시간 비즈니스 인사이트 대시보드
+          </Typography>
+        </Box>
+        <ExportButtons />
       </Box>
 
-      {/* 메트릭 카드들 */}
-      <Grid container spacing={3} mb={4}>
-        {metricsData.map((metric) => (
-          // ✅ Grid v2: item/xs/sm/md 대신 size 사용
-          // ✅ 고유 key: index 대신 metric.title(중복 없다고 가정)
-          <Grid key={metric.title} size={{ xs: 12, sm: 6, md: 3 }}>
+      {/* 메트릭 카드들 - Grid v2 문법 */}
+      <Grid container spacing={3} sx={{ mb: 4 }}>
+        {metricsData.map((metric, index) => (
+          <Grid size={{ xs: 12, sm: 6, md: 3 }} key={index}>
             <MetricCard data={metric} />
           </Grid>
         ))}
       </Grid>
 
-      {/* 차트들 */}
+      {/* 성능 모니터 */}
+      <Box mb={4}>
+        <PerformanceMonitor />
+      </Box>
+
+      {/* 차트들 - Grid v2 문법 */}
       <Grid container spacing={3}>
         <Grid size={{ xs: 12, lg: 8 }}>
           <SimpleChart 

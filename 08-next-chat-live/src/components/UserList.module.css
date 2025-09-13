@@ -1,0 +1,98 @@
+/* src/components/UserList.module.css */
+.userList {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  padding: 1rem;
+  border-bottom: 1px solid #e0e0e0;
+  background: white;
+}
+
+.header h3 {
+  margin: 0;
+  color: #333;
+  font-size: 1.1rem;
+}
+
+.users {
+  flex: 1;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.emptyState {
+  text-align: center;
+  color: #666;
+  font-size: 0.9rem;
+  padding: 2rem 1rem;
+}
+
+.user {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+  border-radius: 8px;
+  transition: background-color 0.2s;
+}
+
+.user:hover {
+  background: rgba(102, 126, 234, 0.1);
+}
+
+.currentUser {
+  background: rgba(102, 126, 234, 0.15);
+  font-weight: 600;
+}
+
+.status {
+  font-size: 0.8rem;
+}
+
+.online {
+  color: #4caf50;
+}
+
+.offline {
+  color: #9e9e9e;
+}
+
+.userName {
+  flex: 1;
+  font-size: 0.9rem;
+}
+
+.youLabel {
+  font-size: 0.8rem;
+  color: #667eea;
+  font-weight: normal;
+}
+
+.help {
+  padding: 1rem;
+  border-top: 1px solid #e0e0e0;
+  background: #f8f9fa;
+}
+
+.helpItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: #666;
+  margin-bottom: 0.25rem;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .users {
+    max-height: 120px;
+  }
+  
+  .help {
+    display: none;
+  }
+}

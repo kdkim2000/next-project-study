@@ -1,0 +1,105 @@
+/* src/components/MessageInput.module.css */
+.messageInput {
+  border-top: 1px solid #e0e0e0;
+  background: white;
+  padding: 1rem;
+}
+
+.inputForm {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.fileButton {
+  background: #f0f0f0;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.fileButton:hover:not(:disabled) {
+  background: #e0e0e0;
+}
+
+.fileButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.textInput {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 25px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.textInput:focus {
+  border-color: #667eea;
+}
+
+.textInput:disabled {
+  background: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.sendButton {
+  background: #667eea;
+  color: white;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sendButton:hover:not(:disabled) {
+  background: #5a6fd8;
+  transform: scale(1.05);
+}
+
+.sendButton:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.uploadingIndicator {
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background: #e3f2fd;
+  color: #1976d2;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .messageInput {
+    padding: 0.75rem;
+  }
+  
+  .inputForm {
+    gap: 0.25rem;
+  }
+  
+  .textInput {
+    font-size: 16px; /* iOS 줌 방지 */
+  }
+}

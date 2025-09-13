@@ -1,0 +1,111 @@
+/* src/app/page.module.css */
+.container {
+  min-height: 100vh;
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.main {
+  max-width: 800px;
+  background: white;
+  border-radius: 20px;
+  padding: 3rem;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.title {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: #333;
+  background: linear-gradient(45deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.description {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  color: #666;
+  line-height: 1.6;
+}
+
+.features {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
+.feature {
+  background: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 10px;
+  text-align: left;
+}
+
+.feature h3 {
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.feature ul {
+  list-style: none;
+  padding: 0;
+}
+
+.feature li {
+  margin: 0.5rem 0;
+  padding-left: 1rem;
+  position: relative;
+}
+
+.feature li::before {
+  content: '▪';
+  color: #667eea;
+  position: absolute;
+  left: 0;
+}
+
+.chatButton {
+  display: inline-block;
+  background: linear-gradient(45deg, #667eea, #764ba2);
+  color: white;
+  padding: 1rem 2rem;
+  text-decoration: none;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin: 2rem 0;
+  transition: transform 0.2s;
+}
+
+.chatButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.tip {
+  background: #e3f2fd;
+  padding: 1rem;
+  border-radius: 10px;
+  color: #1976d2;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .features {
+    grid-template-columns: 1fr;
+  }
+  
+  .title {
+    font-size: 2rem;
+  }
+  
+  .main {
+    padding: 2rem;
+  }
+}

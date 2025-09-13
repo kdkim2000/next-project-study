@@ -1,0 +1,68 @@
+// prisma/schema.prisma - 데이터베이스 스키마 정의
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite" // 개발용 SQLite, 프로덕션에서는 PostgreSQL 권장
+  url      = env("DATABASE_URL")
+}
+
+// NextAuth.js 필수 테이블들
+model Account {
+  id                String  @id @default(cuid())
+  userId            String  @map("user_id")
+  type              String
+  provider          String  // "google", "github" 등
+  providerAccountId String  @map("provider_account_id")
+  refresh_token     String? // OAuth refresh token
+  access_token      String? // OAuth access token
+  expires_at        Int?    // token 만료 시간
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  // 사용자와 1:N 관계
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?   // 사용자 이름
+  email         String    @unique // 이메일 (고유)
+  emailVerified DateTime? @map("email_verified") // 이메일 인증 여부
+  image         String?   // 프로필 이미지 URL
+  role          String    @default("USER") // 역할: USER, ADMIN
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+  
+  // 관계 설정
+  accounts Account[]
+  sessions Session[]
+
+  @@map("users")
+}
+
+// 이메일 인증용 토큰
+model VerificationToken {
+  identifier String   // 이메일 등 식별자
+  token      String   @unique // 인증 토큰
+  expires    DateTime // 만료 시간
+
+  @@unique([identifier, token])
+  @@map("verificationtokens")
+}

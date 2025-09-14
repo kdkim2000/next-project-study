@@ -10,6 +10,23 @@ export interface PDFExportData {
   pieData: ChartDataPoint[];
 }
 
+// 한글 폰트를 jsPDF에 등록하는 헬퍼
+async function useKoreanFont(pdf: jsPDF) {
+  const res = await fetch('/fonts/NotoSansKR-Regular.ttf');
+  const fontBuf = await res.arrayBuffer();
+
+  // ArrayBuffer → base64
+  const bytes = new Uint8Array(fontBuf);
+  let binary = '';
+  for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
+  const base64 = btoa(binary);
+
+  // jsPDF VFS에 등록하고 사용
+  pdf.addFileToVFS('NotoSansKR.ttf', base64);
+  pdf.addFont('NotoSansKR.ttf', 'NotoSansKR', 'normal');
+  pdf.setFont('NotoSansKR', 'normal');
+}
+
 // 전체 대시보드를 PDF로 내보내기
 export async function exportDashboardToPDF(
   elementId: string = 'dashboard-container',
@@ -69,75 +86,60 @@ export async function exportDashboardToPDF(
   }
 }
 
-// 데이터만으로 PDF 리포트 생성
-export function exportDataToPDF(data: PDFExportData, filename: string = 'data-report') {
+// 데이터만으로 PDF 리포트 생성 (한글 폰트 적용)
+export async function exportDataToPDF(data: PDFExportData, filename: string = 'data-report') {
   const pdf = new jsPDF();
-  
-  // 한글 폰트 설정 (기본 폰트 사용)
+
+  // ✅ 한글 폰트 로드/적용
+  await useKoreanFont(pdf);
+
   let yPosition = 20;
-  
-  // 제목
+
   pdf.setFontSize(20);
   pdf.text('Analytics Dashboard Report', 20, yPosition);
   yPosition += 15;
-  
-  // 생성 일시
+
   pdf.setFontSize(10);
   pdf.text(`Generated: ${new Date().toLocaleString('ko-KR')}`, 20, yPosition);
   yPosition += 20;
-  
-  // 메트릭 섹션
+
   pdf.setFontSize(16);
   pdf.text('Key Metrics', 20, yPosition);
   yPosition += 10;
-  
+
   pdf.setFontSize(10);
   data.metrics.forEach(metric => {
     const text = `${metric.title}: ${formatNumber(metric.value)} (${metric.change > 0 ? '+' : ''}${metric.change}%)`;
     pdf.text(text, 25, yPosition);
     yPosition += 8;
   });
-  
+
   yPosition += 10;
-  
-  // 월별 데이터 섹션
   pdf.setFontSize(16);
   pdf.text('Monthly Data', 20, yPosition);
   yPosition += 10;
-  
+
   pdf.setFontSize(10);
   data.chartData.forEach(item => {
     pdf.text(`${item.name}: ${formatNumber(item.value)}`, 25, yPosition);
     yPosition += 6;
-    
-    // 페이지 넘김 처리
-    if (yPosition > 270) {
-      pdf.addPage();
-      yPosition = 20;
-    }
+    if (yPosition > 270) { pdf.addPage(); yPosition = 20; }
   });
-  
+
   yPosition += 10;
-  
-  // 디바이스별 데이터
-  if (yPosition > 200) {
-    pdf.addPage();
-    yPosition = 20;
-  }
-  
+  if (yPosition > 200) { pdf.addPage(); yPosition = 20; }
+
   pdf.setFontSize(16);
   pdf.text('Device Distribution', 20, yPosition);
   yPosition += 10;
-  
+
   pdf.setFontSize(10);
   data.pieData.forEach(item => {
     pdf.text(`${item.name}: ${item.value}%`, 25, yPosition);
     yPosition += 6;
   });
-  
-  // 파일 다운로드
+
   const fileName = `${filename}_${new Date().toISOString().slice(0, 10)}.pdf`;
   pdf.save(fileName);
-  
   return fileName;
 }

@@ -1,0 +1,54 @@
+# .github/workflows/lighthouse.yml - 성능 테스트
+name: Lighthouse Performance Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 0 * * 1' # 매주 월요일 자정
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Use Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Build application
+      run: npm run build
+    
+    - name: Start application
+      run: npm start &
+      
+    - name: Wait for app to be ready
+      run: |
+        timeout 60 bash -c 'until curl -f http://localhost:3000/health; do sleep 2; done'
+    
+    - name: Run Lighthouse CI
+      uses: treosh/lighthouse-ci-action@v10
+      with:
+        urls: |
+          http://localhost:3000
+          http://localhost:3000/analytics
+          http://localhost:3000/chart/advanced-line
+        configPath: './.lighthouserc.js'
+        uploadArtifacts: true
+        temporaryPublicStorage: true
+    
+    - name: Upload Lighthouse results
+      uses: actions/upload-artifact@v3
+      with:
+        name: lighthouse-results
+        path: .lighthouseci/

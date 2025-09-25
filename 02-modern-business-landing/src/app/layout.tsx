@@ -1,63 +1,49 @@
-// src/app/layout.tsx (수정된 버전)
-import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
-import { ThemeProvider } from '@mui/material/styles'
-import CssBaseline from '@mui/material/CssBaseline'
-import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter'
-import GoogleAnalytics from '@/components/common/GoogleAnalytics'
-import theme from '@/styles/theme'
-import './globals.css'
+// src/app/layout.tsx
+// 🎯 학습 목표: Next.js의 공통 레이아웃 이해하기
+// MUI v6 호환성 버전
 
-// Google 폰트 설정
-const inter = Inter({ subsets: ['latin'] })
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import { ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import theme from '@/lib/theme';
 
-// SEO를 위한 메타데이터 설정
+// 🔤 Google Fonts 설정
+const inter = Inter({ subsets: ['latin'] });
+
+// 📝 페이지 메타데이터 설정 (SEO에 중요)
 export const metadata: Metadata = {
-  title: 'Modern Business - 혁신적인 비즈니스 솔루션',
-  description: '현대적이고 전문적인 비즈니스 솔루션을 제공하는 기업입니다.',
-  keywords: '비즈니스, 솔루션, 현대적, 전문적',
-  authors: [{ name: 'Modern Business Team' }],
-  icons: {
-    icon: '/favicon.ico',
-    shortcut: '/favicon.ico',
-    apple: '/apple-touch-icon.png',
-  },
-  openGraph: {
-    title: 'Modern Business Landing',
-    description: '혁신적인 비즈니스 솔루션',
-    type: 'website',
-    locale: 'ko_KR',
-  },
-}
+  title: 'Modern Business - Professional Solutions',
+  description: 'Next.js와 MUI를 활용한 현대적인 기업 랜딩 페이지',
+  keywords: 'business, landing page, nextjs, mui',
+};
 
-/**
- * 전역 레이아웃 컴포넌트 (Server Component)
- * Google Analytics 연동 포함
- */
+// 🏗️ RootLayout: 모든 페이지의 공통 구조
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="ko">
       <body className={inter.className}>
-        {/* Google Analytics 연동 */}
-        {process.env.NEXT_PUBLIC_GA_ID && (
-          <GoogleAnalytics GA_MEASUREMENT_ID={process.env.NEXT_PUBLIC_GA_ID} />
-        )}
-        
-        {/* Material-UI 캐시 프로바이더 */}
-        <AppRouterCacheProvider>
-          {/* Material-UI 테마 프로바이더 */}
-          <ThemeProvider theme={theme}>
-            {/* CSS 기본값 정규화 */}
-            <CssBaseline />
-            {/* 실제 페이지 내용 */}
-            {children}
-          </ThemeProvider>
-        </AppRouterCacheProvider>
+        {/* MUI 테마 프로바이더 - 전체 앱에 일관된 디자인 적용 */}
+        <ThemeProvider theme={theme}>
+          {/* CSS 기본값 리셋 - 브라우저 간 일관성 보장 */}
+          <CssBaseline />
+          {/* 실제 페이지 내용이 여기에 렌더링됩니다 */}
+          {children}
+        </ThemeProvider>
       </body>
     </html>
-  )
+  );
 }
+
+/* 
+📚 학습 노트:
+1. MUI v6에서는 AppRouterCacheProvider가 선택사항입니다
+2. 기본 ThemeProvider와 CssBaseline만으로도 충분히 동작합니다
+3. 필요한 경우 나중에 캐시 최적화를 추가할 수 있습니다
+4. layout.tsx는 Next.js App Router의 핵심 개념입니다
+5. children props를 통해 페이지 내용을 받아옵니다
+*/

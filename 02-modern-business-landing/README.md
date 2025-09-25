@@ -1,1389 +1,933 @@
-# 📚 Project02: Modern Business Landing - React & Next.js 교육 가이드
+# React & Next.js 실무 교육 교재
+## 프로젝트 2: 기업 랜딩 페이지 (Modern Business Landing)
 
-> **React와 Next.js 경험이 없는 개발자를 위한 완전한 학습 프로젝트**
-
-이 프로젝트는 현대적인 기업 랜딩 페이지를 만들면서 React와 Next.js의 핵심 개념들을 단계적으로 학습할 수 있도록 설계되었습니다.
-
----
-
-## 🎯 학습 목표
-
-1. **레이아웃과 중첩 라우팅** - 웹 애플리케이션의 구조적 설계
-2. **Server Components vs Client Components** - Next.js의 핵심 개념
-3. **컴포넌트 재사용과 Props** - React의 기본 철학
-
-## 🛠️ 구현 기술
-
-- 공통 레이아웃 (layout.tsx)
-- Server Components (기본)
-- Client Components ("use client")
-- Props와 Children 패턴
-- 애니메이션 라이브러리 (Framer Motion)
-- 폼 처리 (Contact Form)
-- 환경 변수 설정
-- Google Analytics 연동
+> **"실전으로 배우는 React와 Next.js 완전정복"**  
+> React 경험이 전혀 없는 개발자를 위한 단계별 학습 교재
 
 ---
 
-## 📖 Chapter 1: React 기본 개념 이해
+## 📚 **교재 개요**
 
-### 1.1 React란 무엇인가?
+이 교재는 **React와 Next.js 경험이 전혀 없는 개발자**를 대상으로 합니다. 실제 동작하는 기업 랜딩 페이지를 만들어가면서 React의 핵심 개념들을 자연스럽게 학습할 수 있도록 구성되었습니다.
 
-**React**는 Facebook(현 Meta)에서 개발한 사용자 인터페이스를 만들기 위한 JavaScript 라이브러리입니다.
+### **🎯 이 교재로 배울 수 있는 것**
+- React 컴포넌트의 기본 개념과 작성법
+- Next.js의 파일 기반 라우팅 시스템
+- TypeScript를 활용한 타입 안전한 개발
+- 현대적인 UI 라이브러리 (MUI) 사용법
+- 실무에서 바로 적용 가능한 개발 패턴
 
-#### 🔑 React의 핵심 개념
+### **🎓 학습 목표**
+1. **레이아웃과 중첩 라우팅**: Next.js의 파일 시스템 기반 라우팅 이해
+2. **Server Components vs Client Components**: React의 두 가지 컴포넌트 유형 구분
+3. **컴포넌트 재사용과 Props**: 효율적인 컴포넌트 설계 방법
 
-1. **컴포넌트 기반 아키텍처**
-   - UI를 독립적이고 재사용 가능한 조각들로 나누어 개발
-   - 각 컴포넌트는 자체적인 로직과 렌더링을 담당
+---
 
-2. **선언형 프로그래밍**
-   - 원하는 결과를 선언하면 React가 알아서 DOM을 업데이트
-   - 명령형 프로그래밍과 달리 "어떻게"보다는 "무엇을" 중심으로 생각
+## 🛠️ **사용된 기술 스택**
 
-3. **가상 DOM (Virtual DOM)**
-   - 메모리에 가상의 DOM을 만들어 효율적으로 실제 DOM을 업데이트
-   - 성능 최적화의 핵심 메커니즘
+### **✅ 이번 프로젝트에서 다룬 기술**
+- **Next.js 15** (App Router) - 프레임워크
+- **TypeScript** - 타입 안전성
+- **MUI v6** - UI 컴포넌트 라이브러리 (최신 Grid 문법 포함)
+- **React 18** - 컴포넌트 기반 개발
 
-#### 📝 프로젝트 예시로 이해하기
+### **📋 다음 단계에서 배울 기술들**
+- **Framer Motion** - 애니메이션 효과
+- **고급 폼 처리** - React Hook Form + Yup 검증
+- **환경 변수** - 설정 관리
+- **Google Analytics** - 웹 분석 도구 연동
+- **상태 관리** - Context API, Zustand
 
-우리 프로젝트의 `src/components/common/Header.tsx`를 보면:
+---
 
-```typescript
-// src/components/common/Header.tsx
-'use client'
-import { useState } from 'react'
-// ... 다른 imports
+## 📖 **Chapter 1: React 기초 이해하기**
 
-const Header = () => {
-  const [mobileOpen, setMobileOpen] = useState(false)  // 상태 관리
-  
-  // 컴포넌트 렌더링 (선언형)
+### **1.1 React란 무엇인가?**
+
+React는 **사용자 인터페이스(UI)를 만들기 위한 JavaScript 라이브러리**입니다. 웹 페이지를 작은 조각들(컴포넌트)로 나누어 각각 독립적으로 관리할 수 있게 해줍니다.
+
+#### **🏗️ 전통적인 HTML vs React**
+
+**전통적인 HTML 방식:**
+```html
+<!-- 같은 코드를 여러 번 반복 -->
+<div class="card">
+  <h3>웹 개발</h3>
+  <p>최신 기술을 활용한 웹사이트 제작</p>
+</div>
+<div class="card">
+  <h3>모바일 앱</h3>
+  <p>iOS/Android 앱 개발</p>
+</div>
+```
+
+**React 방식:**
+```tsx
+// 한 번 정의하고 재사용
+function ServiceCard({ title, description }) {
   return (
-    <AppBar position="sticky">
-      <Toolbar>
-        <Typography variant="h6">Modern Business</Typography>
-        {/* 조건부 렌더링 */}
-        {!isMobile ? (
-          <DesktopMenu />
-        ) : (
-          <MobileMenu />
-        )}
+    <div className="card">
+      <h3>{title}</h3>
+      <p>{description}</p>
+    </div>
+  );
+}
+
+// 여러 곳에서 재사용
+<ServiceCard title="웹 개발" description="최신 기술을 활용한 웹사이트 제작" />
+<ServiceCard title="모바일 앱" description="iOS/Android 앱 개발" />
+```
+
+### **1.2 컴포넌트란?**
+
+컴포넌트는 **재사용 가능한 UI 조각**입니다. 우리 프로젝트의 `Header.tsx`를 살펴보겠습니다:
+
+```tsx
+// src/components/Header.tsx
+export default function Header() {
+  return (
+    <AppBar position="sticky" elevation={1}>
+      <Toolbar sx={{ justifyContent: 'space-between' }}>
+        <Typography variant="h6" component="div">
+          Modern Business  {/* 회사명 */}
+        </Typography>
+        
+        <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 2 }}>
+          {/* 네비게이션 메뉴들 */}
+        </Box>
       </Toolbar>
     </AppBar>
-  )
-}
-```
-
-**여기서 배우는 것:**
-- `useState`: React의 상태 관리 Hook
-- 조건부 렌더링: `{condition ? A : B}` 패턴
-- 컴포넌트 분리: 복잡한 UI를 작은 단위로 나누기
-
-### 1.2 JSX 문법 이해
-
-**JSX**는 JavaScript 안에서 HTML과 유사한 문법을 사용할 수 있게 해주는 문법 확장입니다.
-
-#### 📝 프로젝트 예시
-
-```typescript
-// src/components/sections/HeroSection.tsx
-return (
-  <Box sx={{ minHeight: '100vh' }}>
-    <Container maxWidth="lg">
-      <Typography variant="h1" component="h1">
-        혁신적인 비즈니스 솔루션
-      </Typography>
-      <Button variant="contained" onClick={handleClick}>
-        시작하기
-      </Button>
-    </Container>
-  </Box>
-)
-```
-
-**JSX 규칙:**
-- 최상위에는 하나의 요소만 (Fragment `<>` 사용 가능)
-- 모든 태그는 닫혀야 함 (`<br />`, `<img />`)
-- JavaScript 표현식은 `{}` 안에 작성
-- CSS 클래스는 `className`, 인라인 스타일은 객체 형태
-
----
-
-## 📖 Chapter 2: Next.js와 App Router
-
-### 2.1 Next.js란?
-
-**Next.js**는 React 기반의 프레임워크로, 서버사이드 렌더링(SSR), 정적 사이트 생성(SSG), API 라우팅 등의 기능을 제공합니다.
-
-#### 🔑 Next.js의 주요 특징
-
-1. **파일 기반 라우팅**: 폴더 구조가 URL 구조가 됨
-2. **자동 코드 분할**: 페이지별로 JavaScript 번들을 자동으로 분리
-3. **이미지 최적화**: `next/image`로 자동 이미지 최적화
-4. **API 라우팅**: 백엔드 API를 같은 프로젝트 내에서 구현 가능
-
-### 2.2 App Router vs Pages Router
-
-Next.js 13부터 도입된 **App Router**는 기존 Pages Router의 진화된 형태입니다.
-
-#### 📁 프로젝트 구조 분석
-
-```
-src/app/                 # App Router의 루트
-├── layout.tsx          # 전역 레이아웃 (모든 페이지에 적용)
-├── page.tsx           # 홈페이지 (/ 경로)
-├── about/             # /about 경로
-│   └── page.tsx       # About 페이지 컴포넌트
-├── services/          # /services 경로  
-│   └── page.tsx       # Services 페이지 컴포넌트
-├── contact/           # /contact 경로
-│   └── page.tsx       # Contact 페이지 컴포넌트
-└── api/               # API 라우트
-    └── contact/
-        └── route.ts   # POST /api/contact
-```
-
-### 2.3 레이아웃과 중첩 라우팅 심화
-
-#### 🎨 전역 레이아웃 (`app/layout.tsx`)
-
-```typescript
-// src/app/layout.tsx
-export default function RootLayout({
-  children,  // 각 페이지의 내용이 여기에 삽입됨
-}: {
-  children: React.ReactNode
-}) {
-  return (
-    <html lang="ko">
-      <body>
-        {/* Google Analytics 스크립트 */}
-        <GoogleAnalytics GA_MEASUREMENT_ID={process.env.NEXT_PUBLIC_GA_ID} />
-        
-        {/* Material-UI 테마 프로바이더 */}
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          {children}  {/* 여기에 각 페이지가 렌더링됨 */}
-        </ThemeProvider>
-      </body>
-    </html>
-  )
+  );
 }
 ```
 
 **핵심 개념:**
-- `children` props: 자식 컴포넌트를 받아서 렌더링하는 패턴
-- 전역 설정: 모든 페이지에서 공통으로 사용할 설정들
-- Provider 패턴: 하위 컴포넌트들에게 데이터나 기능을 제공
+- `function Header()`로 컴포넌트를 정의
+- `return` 안에 UI 구조를 JSX로 작성
+- `export default`로 다른 파일에서 사용할 수 있도록 내보냄
 
-#### 🔄 중첩 라우팅 실습
+### **1.3 JSX (JavaScript XML)**
 
-우리 프로젝트를 확장해서 중첩 라우팅을 만들어보면:
+JSX는 **JavaScript 안에서 HTML과 비슷한 문법을 사용**할 수 있게 해주는 React의 특별한 문법입니다.
 
+#### **JSX의 주요 규칙:**
+
+1. **하나의 부모 요소**: 반드시 하나의 부모로 감싸야 함
+```tsx
+// ✅ 올바른 예
+return (
+  <div>
+    <h1>제목</h1>
+    <p>내용</p>
+  </div>
+);
+
+// ❌ 잘못된 예 - 두 개의 최상위 요소
+return (
+  <h1>제목</h1>
+  <p>내용</p>
+);
+```
+
+2. **JavaScript 표현식**: `{}`로 감싸서 JavaScript 코드 실행
+```tsx
+const companyName = 'Modern Business';
+return <h1>{companyName}</h1>; // "Modern Business" 출력
+```
+
+3. **조건부 렌더링**: 조건에 따라 다른 내용 표시
+```tsx
+const isLoggedIn = true;
+return (
+  <div>
+    {isLoggedIn ? <p>환영합니다!</p> : <p>로그인해주세요</p>}
+  </div>
+);
+```
+
+---
+
+## 📖 **Chapter 2: Next.js 라우팅 시스템**
+
+### **2.1 Next.js란?**
+
+Next.js는 **React를 기반으로 한 풀스택 웹 프레임워크**입니다. React만으로는 복잡한 라우팅, SEO, 성능 최적화 등이 어려운데, Next.js가 이런 문제들을 해결해줍니다.
+
+### **2.2 App Router - 파일 시스템 기반 라우팅**
+
+Next.js 13+에서 도입된 App Router는 **폴더 구조가 곧 URL 구조**가 되는 시스템입니다.
+
+#### **🗂️ 우리 프로젝트의 라우팅 구조:**
 ```
 src/app/
+├── layout.tsx          # 모든 페이지 공통 레이아웃
+├── page.tsx           # 홈페이지 (/)
+├── about/
+│   └── page.tsx       # 회사소개 페이지 (/about)
 ├── services/
-│   ├── layout.tsx          # 서비스 공통 레이아웃
-│   ├── page.tsx           # /services (서비스 목록)
-│   ├── web-development/   
-│   │   └── page.tsx       # /services/web-development
-│   └── consulting/
-│       └── page.tsx       # /services/consulting
+│   └── page.tsx       # 서비스 페이지 (/services)
+└── contact/
+    └── page.tsx       # 연락처 페이지 (/contact)
 ```
 
-**실습 과제:**
-1. `src/app/services/web-development/page.tsx` 파일 생성
-2. 서비스 상세 페이지 구현
-3. 네비게이션 링크 연결
+#### **🔗 URL과 파일의 관계:**
+- `http://localhost:3000/` → `src/app/page.tsx`
+- `http://localhost:3000/about` → `src/app/about/page.tsx`
+- `http://localhost:3000/services` → `src/app/services/page.tsx`
+- `http://localhost:3000/contact` → `src/app/contact/page.tsx`
 
----
+### **2.3 layout.tsx - 공통 레이아웃의 이해**
 
-## 📖 Chapter 3: Server vs Client Components
+`layout.tsx`는 **모든 페이지에 공통으로 적용되는 레이아웃**을 정의합니다:
 
-### 3.1 Server Components란?
-
-**Server Components**는 Next.js 13+의 App Router에서 도입된 개념으로, 서버에서 렌더링되는 컴포넌트입니다.
-
-#### 🔑 Server Components의 특징
-
-1. **서버에서 실행**: JavaScript가 클라이언트로 전송되지 않음
-2. **더 빠른 초기 로딩**: HTML이 서버에서 생성되어 전송
-3. **SEO 친화적**: 검색엔진이 완성된 HTML을 크롤링 가능
-4. **제한사항**: 브라우저 API, 이벤트 핸들러, useState 등 사용 불가
-
-#### 📝 프로젝트 예시: Server Component
-
-```typescript
-// src/app/page.tsx (Server Component - 기본값)
-import Header from '@/components/common/Header'
-import HeroSection from '@/components/sections/HeroSection'
-// ... 다른 imports
-
-export default function HomePage() {
-  // 여기서는 useState, useEffect 등 사용 불가
-  // console.log는 서버 콘솔에 출력됨
-  
-  return (
-    <Box component="main">
-      <Header />
-      <HeroSection />
-      {/* 다른 섹션들 */}
-    </Box>
-  )
-}
-```
-
-### 3.2 Client Components란?
-
-**Client Components**는 브라우저에서 실행되는 컴포넌트로, React의 모든 기능을 사용할 수 있습니다.
-
-#### 🔑 Client Components의 특징
-
-1. **브라우저에서 실행**: JavaScript 번들에 포함
-2. **상호작용 가능**: 이벤트 핸들러, 상태 관리 가능
-3. **React Hooks 사용 가능**: useState, useEffect 등
-4. **'use client' 지시문 필요**: 파일 최상단에 명시
-
-#### 📝 프로젝트 예시: Client Component
-
-```typescript
-// src/components/common/Header.tsx (Client Component)
-'use client'  // ← 이 지시문이 핵심!
-import { useState } from 'react'  // Hook 사용 가능
-
-const Header = () => {
-  const [mobileOpen, setMobileOpen] = useState(false)  // 상태 관리
-  
-  const handleDrawerToggle = () => {  // 이벤트 핸들러
-    setMobileOpen(!mobileOpen)
-  }
-  
-  return (
-    <AppBar>
-      <IconButton onClick={handleDrawerToggle}>  {/* 이벤트 처리 */}
-        <MenuIcon />
-      </IconButton>
-      {/* 나머지 UI */}
-    </AppBar>
-  )
-}
-```
-
-### 3.3 언제 어떤 컴포넌트를 사용할까?
-
-#### ✅ Server Components 사용 시기
-
-- 데이터 페칭이 필요한 경우
-- SEO가 중요한 페이지
-- 정적 콘텐츠 표시
-- 초기 로딩 속도가 중요한 경우
-
-#### ✅ Client Components 사용 시기
-
-- 사용자 상호작용이 필요한 경우 (버튼 클릭, 폼 입력)
-- 브라우저 API 사용이 필요한 경우 (localStorage, geolocation)
-- React Hooks 사용이 필요한 경우
-- 실시간 업데이트가 필요한 경우
-
-#### 📊 프로젝트 내 컴포넌트 분류
-
-| 컴포넌트 | 타입 | 이유 |
-|----------|------|------|
-| `app/page.tsx` | Server | 정적 페이지 구조, SEO 중요 |
-| `app/about/page.tsx` | Server | 정적 콘텐츠 |
-| `Header.tsx` | Client | 모바일 메뉴 토글 상태 관리 |
-| `HeroSection.tsx` | Client | Framer Motion 애니메이션 |
-| `ContactForm.tsx` | Client | 폼 상태 관리, 사용자 입력 |
-
----
-
-## 📖 Chapter 4: 컴포넌트 재사용과 Props
-
-### 4.1 Props란?
-
-**Props**(Properties의 줄임말)는 React 컴포넌트에 데이터를 전달하는 방법입니다. 함수의 매개변수와 비슷한 개념입니다.
-
-#### 🔑 Props의 특징
-
-1. **읽기 전용**: 컴포넌트 내부에서 props를 수정할 수 없음
-2. **단방향 데이터 흐름**: 부모에서 자식으로만 데이터 전달
-3. **타입 안정성**: TypeScript로 props의 타입을 정의 가능
-
-### 4.2 TypeScript로 Props 타입 정의
-
-#### 📝 프로젝트 예시: ContactForm Props
-
-```typescript
-// src/components/forms/ContactForm.tsx
-interface ContactFormData {  // Props의 타입 정의
-  name: string
-  email: string
-  company: string
-  phone: string
-  message: string
-}
-
-// React Hook Form의 useForm에서 타입 사용
-const {
-  control,
-  handleSubmit,
-  formState: { errors },
-} = useForm<ContactFormData>({  // ← 제네릭으로 타입 지정
-  resolver: yupResolver(schema),
-  defaultValues: {
-    name: '',
-    email: '',
-    company: '',
-    phone: '',
-    message: '',
-  },
-})
-```
-
-#### 📝 프로젝트 예시: GoogleAnalytics Props
-
-```typescript
-// src/components/common/GoogleAnalytics.tsx
-interface GoogleAnalyticsProps {
-  GA_MEASUREMENT_ID: string  // 필수 prop
-}
-
-const GoogleAnalytics = ({ GA_MEASUREMENT_ID }: GoogleAnalyticsProps) => {
-  return (
-    <Script
-      src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
-    />
-  )
-}
-
-// 사용할 때:
-<GoogleAnalytics GA_MEASUREMENT_ID={process.env.NEXT_PUBLIC_GA_ID} />
-```
-
-### 4.3 Children 패턴 이해
-
-**Children 패턴**은 컴포넌트가 자식 요소들을 받아서 렌더링하는 패턴입니다.
-
-#### 📝 프로젝트 예시: Layout의 Children
-
-```typescript
+```tsx
 // src/app/layout.tsx
 export default function RootLayout({
-  children,  // ← children prop
+  children,  // 실제 페이지 내용이 여기에 들어감
 }: {
-  children: React.ReactNode  // ← 타입 정의
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="ko">
+      <body>
+        {/* MUI 테마 설정 - 모든 페이지에 적용 */}
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          {children}  {/* 페이지별 내용이 이 자리에 렌더링 */}
+        </ThemeProvider>
+      </body>
+    </html>
+  );
+}
+```
+
+**동작 원리:**
+1. 사용자가 `/about` 페이지를 방문
+2. Next.js가 `layout.tsx`를 먼저 렌더링
+3. `{children}` 자리에 `about/page.tsx`의 내용을 삽입
+4. 완성된 HTML을 브라우저에 전송
+
+### **2.4 Next.js Link - 클라이언트 사이드 라우팅**
+
+일반적인 `<a>` 태그는 페이지 전체를 새로 로드하지만, Next.js의 `Link`는 **필요한 부분만 업데이트**합니다:
+
+```tsx
+// src/components/Header.tsx
+import Link from 'next/link';
+
+const navigationItems = [
+  { label: '홈', href: '/' },
+  { label: '서비스', href: '/services' },
+  { label: '회사소개', href: '/about' },
+  { label: '연락처', href: '/contact' },
+];
+
+// MUI Button과 Next.js Link 결합
+<Button
+  component={Link}    // MUI Button을 Link로 감싸기
+  href={item.href}    // 이동할 경로
+  color="inherit"
+>
+  {item.label}
+</Button>
+```
+
+**장점:**
+- 페이지 전체 새로고침 없음 → 빠른 네비게이션
+- 브라우저 뒤로가기/앞으로가기 자동 지원
+- SEO 친화적인 URL 구조
+
+---
+
+## 📖 **Chapter 3: Server Components vs Client Components**
+
+### **3.1 React 18의 새로운 개념**
+
+React 18과 Next.js 13+에서는 컴포넌트가 **두 가지 종류**로 나뉩니다:
+
+#### **🖥️ Server Components (서버 컴포넌트)**
+- **서버에서 렌더링**되어 완성된 HTML을 브라우저에 전송
+- **기본값**으로, 별도 설정 없이 서버 컴포넌트가 됨
+- 상호작용(클릭, 입력 등) 불가능
+- SEO에 유리하고 초기 로딩이 빠름
+
+#### **💻 Client Components (클라이언트 컴포넌트)**
+- **브라우저에서 실행**되는 JavaScript
+- `'use client'` 지시어로 명시적 선언 필요
+- 사용자 상호작용 가능 (버튼 클릭, 폼 입력 등)
+- React 훅(useState, useEffect 등) 사용 가능
+
+### **3.2 Server Component 실제 예시**
+
+우리 프로젝트의 `Header.tsx`를 보겠습니다:
+
+```tsx
+// src/components/Header.tsx
+'use client';  // 클라이언트 컴포넌트로 설정
+
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';  // 브라우저 전용 훅
+
+export default function Header() {
+  const pathname = usePathname();  // 현재 경로 확인 (브라우저에서만 가능)
+  
+  return (
+    <AppBar position="sticky">
+      {/* 네비게이션 메뉴 렌더링 */}
+    </AppBar>
+  );
+}
+```
+
+**왜 Client Component인가?**
+- `usePathname()` 훅을 사용하여 현재 경로를 확인
+- 현재 페이지 메뉴에 활성화 표시를 해야 함
+- 브라우저에서만 실행 가능한 기능이므로 `'use client'` 필요
+
+### **3.3 Client Component 실제 예시**
+
+`ContactSection.tsx`는 폼 처리를 위한 클라이언트 컴포넌트입니다:
+
+```tsx
+// src/components/ContactSection.tsx
+'use client';  // 필수 선언
+
+import { useState } from 'react';
+
+export default function ContactSection() {
+  // React 훅 사용 - 클라이언트에서만 가능
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    message: '',
+  });
+
+  // 사용자 입력 처리 - 브라우저 이벤트
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  // 폼 제출 처리 - 사용자 상호작용
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    // 폼 데이터 처리 로직
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <TextField
+        name="name"
+        value={formData.name}
+        onChange={handleInputChange}  // 사용자 입력에 반응
+      />
+      {/* 기타 폼 필드들 */}
+    </form>
+  );
+}
+```
+
+**Client Component인 이유:**
+- `useState`로 폼 데이터 상태 관리
+- `onChange`, `onSubmit` 이벤트 처리
+- 사용자 입력에 실시간 반응해야 함
+
+### **3.4 언제 어떤 컴포넌트를 사용할까?**
+
+#### **✅ Server Component 사용 시기:**
+- 정적 콘텐츠 표시 (텍스트, 이미지, 링크 등)
+- 데이터베이스에서 데이터를 가져와서 표시
+- SEO가 중요한 페이지
+- **예시**: `About` 페이지, 블로그 포스트, 제품 목록
+
+```tsx
+// Server Component 예시 - about/page.tsx
+export default function AboutPage() {
+  // 서버에서 실행되는 코드
+  const teamMembers = [
+    { name: '김철수', position: 'CEO' },
+    { name: '박영희', position: 'CTO' },
+  ];
+
+  return (
+    <Container>
+      {teamMembers.map((member) => (
+        <Card key={member.name}>
+          <Typography>{member.name}</Typography>
+          <Typography>{member.position}</Typography>
+        </Card>
+      ))}
+    </Container>
+  );
+}
+```
+
+#### **✅ Client Component 사용 시기:**
+- 사용자 상호작용이 필요한 경우
+- 폼 입력, 버튼 클릭, 드래그 앤 드롭 등
+- React 훅(useState, useEffect 등) 사용
+- 브라우저 API (localStorage, geolocation 등) 사용
+
+```tsx
+// Client Component 예시 - contact/page.tsx
+'use client';
+
+export default function ContactPage() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  const handleSubmit = () => {
+    setIsSubmitting(true);
+    // 폼 제출 로직
+  };
+
+  return (
+    <Button 
+      onClick={handleSubmit} 
+      disabled={isSubmitting}
+    >
+      {isSubmitting ? '전송 중...' : '전송'}
+    </Button>
+  );
+}
+```
+
+---
+
+## 📖 **Chapter 4: Props와 컴포넌트 재사용**
+
+### **4.1 Props란 무엇인가?**
+
+Props(Properties)는 **부모 컴포넌트에서 자식 컴포넌트로 데이터를 전달하는 방법**입니다. 함수의 매개변수와 비슷한 개념입니다.
+
+#### **📦 Props의 기본 개념:**
+```tsx
+// 일반 함수에서 매개변수
+function greet(name) {
+  return `안녕하세요, ${name}님!`;
+}
+
+// React 컴포넌트에서 Props
+function Greeting({ name }) {
+  return <h1>안녕하세요, {name}님!</h1>;
+}
+```
+
+### **4.2 실제 프로젝트에서 Props 사용법**
+
+우리 프로젝트의 `HeroSection.tsx`에서 Props를 어떻게 활용하는지 살펴보겠습니다:
+
+```tsx
+// src/components/HeroSection.tsx
+
+// 1. Props 타입 정의 (TypeScript)
+interface HeroSectionProps {
+  companyInfo: {
+    name: string;
+    tagline: string;
+    description: string;
+  };
+}
+
+// 2. Props 받아오기 (구조 분해 할당)
+export default function HeroSection({ companyInfo }: HeroSectionProps) {
+  return (
+    <Container maxWidth="md">
+      {/* 3. Props 데이터 사용 */}
+      <Typography variant="h1">
+        {companyInfo.tagline}  {/* 전달받은 데이터 표시 */}
+      </Typography>
+      
+      <Typography variant="h5">
+        {companyInfo.description}
+      </Typography>
+    </Container>
+  );
+}
+```
+
+#### **📤 부모 컴포넌트에서 Props 전달:**
+```tsx
+// src/app/page.tsx
+export default function Home() {
+  // 데이터 준비
+  const companyInfo = {
+    name: 'Modern Business',
+    tagline: '혁신적인 비즈니스 솔루션',
+    description: 'Next.js와 MUI를 활용한 현대적인 웹 개발',
+  };
+
+  return (
+    <main>
+      {/* Props로 데이터 전달 */}
+      <HeroSection companyInfo={companyInfo} />
+    </main>
+  );
+}
+```
+
+### **4.3 배열 데이터와 map() 함수**
+
+여러 개의 유사한 데이터를 렌더링할 때는 `map()` 함수를 사용합니다:
+
+```tsx
+// src/components/ServicesSection.tsx
+interface Service {
+  id: number;
+  title: string;
+  description: string;
+  icon: string;
+}
+
+interface ServicesSectionProps {
+  services: Service[];  // 배열 타입
+}
+
+export default function ServicesSection({ services }: ServicesSectionProps) {
+  return (
+    <Grid container spacing={4}>
+      {/* map() 함수로 배열을 컴포넌트로 변환 */}
+      {services.map((service) => (
+        <Grid size={{ xs: 12, md: 4 }} key={service.id}>
+          <ServiceCard service={service} />  {/* 개별 서비스를 Props로 전달 */}
+        </Grid>
+      ))}
+    </Grid>
+  );
+}
+```
+
+#### **🔄 map() 함수의 동작 원리:**
+```tsx
+// JavaScript 배열
+const services = [
+  { id: 1, title: '웹 개발', icon: '💻' },
+  { id: 2, title: '모바일 앱', icon: '📱' },
+  { id: 3, title: '디지털 마케팅', icon: '📈' },
+];
+
+// map()으로 JSX 배열 생성
+services.map((service) => (
+  <ServiceCard key={service.id} service={service} />
+))
+
+// 결과적으로 이렇게 됨:
+[
+  <ServiceCard key={1} service={{id: 1, title: '웹 개발', icon: '💻'}} />,
+  <ServiceCard key={2} service={{id: 2, title: '모바일 앱', icon: '📱'}} />,
+  <ServiceCard key={3} service={{id: 3, title: '디지털 마케팅', icon: '📈'}} />,
+]
+```
+
+**⚠️ key prop의 중요성:**
+- React가 배열의 각 요소를 구분하기 위해 필요
+- 고유한 값이어야 함 (보통 ID 사용)
+- 성능 최적화에 중요한 역할
+
+### **4.4 Children Pattern**
+
+`children`은 **컴포넌트의 여는 태그와 닫는 태그 사이의 내용**을 전달하는 특별한 Props입니다:
+
+```tsx
+// src/app/layout.tsx
+export default function RootLayout({
+  children,  // 페이지 내용이 children으로 전달됨
+}: {
+  children: React.ReactNode;
 }) {
   return (
     <html lang="ko">
       <body>
         <ThemeProvider theme={theme}>
-          {children}  {/* ← 여기에 페이지 내용이 삽입됨 */}
+          <CssBaseline />
+          {children}  {/* 여기에 페이지별 내용 렌더링 */}
         </ThemeProvider>
       </body>
     </html>
-  )
+  );
 }
 ```
 
-**동작 원리:**
-1. `app/page.tsx`가 렌더링될 때
-2. 해당 페이지의 내용이 `children`으로 전달됨
-3. Layout이 `children`을 감싸서 완성된 HTML 생성
+**Children Pattern의 활용:**
+```tsx
+// 사용법
+<Layout>
+  <Header />
+  <main>메인 컨텐츠</main>
+  <Footer />
+</Layout>
 
-### 4.4 컴포넌트 재사용성 높이기
-
-#### 📝 프로젝트 예시: 재사용 가능한 Card 컴포넌트
-
-우리 프로젝트의 서비스 카드를 재사용 가능하게 만들면:
-
-```typescript
-// 재사용 가능한 ServiceCard 컴포넌트 (예시)
-interface ServiceCardProps {
-  title: string
-  description: string
-  icon: React.ReactNode
-  features: string[]
-  onButtonClick?: () => void  // 선택적 prop (?)
-}
-
-const ServiceCard = ({ 
-  title, 
-  description, 
-  icon, 
-  features,
-  onButtonClick 
-}: ServiceCardProps) => {
+// Layout 컴포넌트 내부에서
+function Layout({ children }) {
   return (
-    <Card>
-      <CardContent>
-        {icon}
-        <Typography variant="h5">{title}</Typography>
-        <Typography>{description}</Typography>
-        {features.map((feature, index) => (
-          <Typography key={index}>✓ {feature}</Typography>
-        ))}
-      </CardContent>
-      <CardActions>
-        <Button onClick={onButtonClick}>자세히 보기</Button>
-      </CardActions>
-    </Card>
-  )
-}
-
-// 사용 방법:
-<ServiceCard
-  title="웹 개발"
-  description="현대적인 웹사이트 개발"
-  icon={<CodeIcon />}
-  features={['반응형 디자인', 'SEO 최적화']}
-  onButtonClick={() => router.push('/services/web-development')}
-/>
-```
-
-### 4.5 Props 전달 패턴들
-
-#### 1. 구조 분해 할당 (Destructuring)
-
-```typescript
-// ❌ 비효율적
-const Header = (props) => {
-  return <h1>{props.title}</h1>
-}
-
-// ✅ 효율적
-const Header = ({ title, subtitle }) => {
-  return (
-    <div>
-      <h1>{title}</h1>
-      <h2>{subtitle}</h2>
+    <div className="layout">
+      {children}  // Header, main, Footer가 모두 여기에 렌더링
     </div>
-  )
+  );
 }
 ```
 
-#### 2. 기본값 설정
+### **4.5 TypeScript와 Props**
 
-```typescript
-interface ButtonProps {
-  variant?: 'primary' | 'secondary'  // 선택적 prop
-  children: React.ReactNode
+TypeScript를 사용하면 **Props의 타입을 미리 정의**하여 오류를 방지할 수 있습니다:
+
+```tsx
+// Footer 컴포넌트 예시
+interface FooterProps {
+  companyName: string;        // 필수 Props
+  year?: number;              // 선택적 Props (? 표시)
+  links?: string[];           // 배열 타입 (선택적)
 }
 
-const Button = ({ 
-  variant = 'primary',  // ← 기본값 설정
-  children 
-}: ButtonProps) => {
+export default function Footer({ 
+  companyName, 
+  year = 2024,                // 기본값 설정
+  links = []                  // 빈 배열을 기본값으로
+}: FooterProps) {
   return (
-    <button className={`btn btn-${variant}`}>
-      {children}
-    </button>
-  )
+    <footer>
+      <Typography>
+        © {year} {companyName}. All rights reserved.
+      </Typography>
+    </footer>
+  );
 }
 ```
+
+**TypeScript Props 타입의 장점:**
+- 개발 중 오타나 잘못된 데이터 타입 사용 방지
+- IDE에서 자동 완성 지원
+- 코드 가독성 향상
+- 런타임 오류 사전 방지
 
 ---
 
-## 📖 Chapter 5: 애니메이션 라이브러리 (Framer Motion)
+## 📖 **Chapter 5: MUI v6 최신 문법과 스타일링**
 
-### 5.1 왜 애니메이션이 필요한가?
+### **5.1 MUI (Material-UI)란?**
 
-현대 웹 개발에서 애니메이션은 단순한 장식이 아닙니다:
+MUI는 **Google의 Material Design을 React로 구현한 컴포넌트 라이브러리**입니다. 버튼, 입력 필드, 카드 등 미리 만들어진 UI 컴포넌트를 제공합니다.
 
-1. **사용자 경험 개선**: 자연스러운 인터랙션 제공
-2. **주의 집중**: 중요한 요소에 시선 유도
-3. **브랜드 차별화**: 독특한 개성 표현
-4. **피드백 제공**: 사용자 행동에 대한 시각적 반응
+### **5.2 MUI v6의 새로운 Grid 시스템**
 
-### 5.2 Framer Motion 기본 개념
+MUI v6에서는 Grid 컴포넌트의 문법이 더욱 직관적으로 개선되었습니다:
 
-**Framer Motion**은 React를 위한 production-ready 애니메이션 라이브러리입니다.
+#### **📐 Grid 시스템의 기본 개념:**
+- **Container**: 행(row) 역할
+- **Grid**: 열(column) 역할  
+- **12컬럼 시스템**: 한 행을 최대 12개 컬럼으로 분할
 
-#### 🔑 핵심 개념들
-
-1. **motion 컴포넌트**: HTML 태그를 애니메이션 가능한 컴포넌트로 변환
-2. **animate props**: 애니메이션 대상 상태 정의
-3. **transition**: 애니메이션 방식과 속도 제어
-4. **variants**: 복잡한 애니메이션 시퀀스 관리
-
-### 5.3 프로젝트 내 애니메이션 분석
-
-#### 📝 HeroSection의 Fade In Up 애니메이션
-
-```typescript
-// src/components/sections/HeroSection.tsx
-'use client'
-import { motion } from 'framer-motion'
-
-const HeroSection = () => {
-  // 애니메이션 설정 객체
-  const fadeInUp = {
-    initial: { opacity: 0, y: 60 },      // 시작 상태
-    animate: { opacity: 1, y: 0 },       // 끝 상태
-    transition: { duration: 0.8, ease: "easeOut" }  // 전환 방식
-  }
-
-  return (
-    <Box>
-      {/* motion.div로 감싸서 애니메이션 적용 */}
-      <motion.div {...fadeInUp}>
-        <Typography variant="h1">
-          혁신적인 비즈니스 솔루션
-        </Typography>
-      </motion.div>
-      
-      {/* 다른 요소들은 지연시켜서 애니메이션 */}
-      <motion.div 
-        initial={{ opacity: 0, y: 60 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.2 }}  // ← 0.2초 지연
-      >
-        <Typography variant="h5">
-          현대적이고 효율적인 솔루션으로...
-        </Typography>
-      </motion.div>
-    </Box>
-  )
-}
+```tsx
+// src/app/about/page.tsx에서 실제 사용 예시
+<Grid container spacing={6}>
+  {/* 데스크탑에서는 절반씩, 모바일에서는 전체 사용 */}
+  <Grid size={{ xs: 12, md: 6 }}>
+    <Typography variant="h4">우리의 비전</Typography>
+    {/* 비전 내용 */}
+  </Grid>
+  
+  <Grid size={{ xs: 12, md: 6 }}>
+    <Typography variant="h4">핵심 가치</Typography>
+    {/* 가치 내용 */}
+  </Grid>
+</Grid>
 ```
 
-**애니메이션 분석:**
-- `initial`: 컴포넌트가 처음 나타날 때의 상태
-- `animate`: 애니메이션이 완료된 후의 상태
-- `y: 60`: Y축으로 60px 아래에서 시작
-- `opacity: 0`: 완전히 투명한 상태에서 시작
-- `duration: 0.8`: 0.8초 동안 애니메이션 실행
-- `delay: 0.2`: 0.2초 후에 애니메이션 시작
+#### **🔄 MUI v6 vs v5 문법 비교:**
 
-#### 📝 스크롤 기반 애니메이션
+```tsx
+// ❌ MUI v5 이전 문법
+<Grid item xs={12} sm={6} md={4}>
+  <Card>내용</Card>
+</Grid>
 
-```typescript
-// src/components/sections/ServicesSection.tsx
-<motion.div
-  initial={{ opacity: 0, y: 50 }}
-  whileInView={{ opacity: 1, y: 0 }}      // ← 화면에 보일 때 애니메이션
-  transition={{ duration: 0.6, delay: index * 0.1 }}  // ← 순차적 등장
-  viewport={{ once: true }}                // ← 한 번만 실행
->
-  <Card>
-    {/* 서비스 카드 내용 */}
-  </Card>
-</motion.div>
+// ✅ MUI v6 새로운 문법
+<Grid size={{ xs: 12, sm: 6, md: 4 }}>
+  <Card>내용</Card>
+</Grid>
 ```
 
-**스크롤 애니메이션 분석:**
-- `whileInView`: 요소가 뷰포트에 보이는 동안의 상태
-- `viewport={{ once: true }}`: 한 번만 애니메이션 실행 (성능 최적화)
-- `delay: index * 0.1`: 각 카드마다 0.1초씩 지연 (순차적 등장)
+### **5.3 반응형 디자인 구현**
 
-#### 📝 호버 애니메이션
+#### **📱 Breakpoint 시스템:**
+- `xs`: 0px 이상 (모바일)
+- `sm`: 600px 이상 (작은 태블릿)
+- `md`: 900px 이상 (태블릿/노트북)
+- `lg`: 1200px 이상 (데스크탑)
+- `xl`: 1536px 이상 (큰 모니터)
 
-```typescript
-// 카드에 마우스를 올렸을 때 위로 살짝 올라가는 효과
-<motion.div
-  whileHover={{ y: -10 }}  // ← 호버 시 10px 위로
->
-  <Card>
-    {/* 카드 내용 */}
-  </Card>
-</motion.div>
+```tsx
+// src/app/services/page.tsx에서 서비스 카드 배치
+<Grid container spacing={4}>
+  {services.map((service) => (
+    <Grid 
+      size={{ 
+        xs: 12,    // 모바일: 1개씩 세로 배치
+        md: 6,     // 태블릿: 2개씩 가로 배치  
+        lg: 4      // 데스크탑: 3개씩 가로 배치
+      }} 
+      key={service.id}
+    >
+      <ServiceCard service={service} />
+    </Grid>
+  ))}
+</Grid>
 ```
 
-### 5.4 애니메이션 성능 최적화
+### **5.4 MUI 테마 시스템**
 
-#### 🚀 최적화 팁들
+테마를 통해 **전체 애플리케이션의 일관된 디자인**을 관리할 수 있습니다:
 
-1. **GPU 가속 속성 사용**: `transform`, `opacity` 우선 사용
-2. **will-change 속성**: 브라우저에게 변경될 속성 미리 알려주기
-3. **once: true**: 스크롤 애니메이션은 한 번만 실행
-4. **적절한 duration**: 너무 길거나 짧지 않게 (0.3~0.8초 권장)
+```tsx
+// src/lib/theme.ts
+const theme = createTheme({
+  // 색상 팔레트 정의
+  palette: {
+    primary: {
+      main: '#1976d2',    // 메인 블루 컬러
+      light: '#42a5f5',   // 밝은 블루
+      dark: '#1565c0',    // 어두운 블루
+    },
+    secondary: {
+      main: '#dc004e',    // 포인트 컬러
+    },
+  },
+  
+  // 타이포그래피 스타일
+  typography: {
+    h1: {
+      fontSize: '3.5rem',
+      fontWeight: 700,
+    },
+    body1: {
+      fontSize: '1rem',
+      lineHeight: 1.6,
+    },
+  },
+});
+```
 
-#### 📝 성능 최적화된 애니메이션
-
-```typescript
-// 좋은 예: GPU 가속 속성 사용
-<motion.div
-  initial={{ opacity: 0, scale: 0.8, y: 20 }}
-  animate={{ opacity: 1, scale: 1, y: 0 }}
-  transition={{ 
-    duration: 0.5,
-    ease: "easeOut"
+#### **🎨 테마 사용 예시:**
+```tsx
+// 컴포넌트에서 테마 색상 사용
+<Button 
+  sx={{
+    color: 'primary.main',      // 테마의 메인 컬러
+    fontSize: 'h2.fontSize',    // 테마의 타이포그래피
+    bgcolor: 'background.paper', // 테마의 배경 색상
   }}
 >
-
-// 피해야 할 예: 레이아웃을 변경하는 속성
-<motion.div
-  initial={{ width: 0, height: 0 }}  // ← 성능에 좋지 않음
-  animate={{ width: 200, height: 200 }}
->
+  버튼
+</Button>
 ```
 
 ---
 
-## 📖 Chapter 6: 폼 처리와 상태 관리
+## 📖 **Chapter 6: 상태 관리와 이벤트 처리**
 
-### 6.1 React에서 폼 다루기
+### **6.1 useState Hook 이해하기**
 
-웹 애플리케이션에서 폼은 사용자와의 주요 접점입니다. React에서 폼을 다루는 방법은 크게 두 가지입니다:
+`useState`는 **컴포넌트에서 상태(데이터)를 관리**하는 React 훅입니다:
 
-1. **제어 컴포넌트 (Controlled Components)**: React가 폼 상태를 관리
-2. **비제어 컴포넌트 (Uncontrolled Components)**: DOM이 폼 상태를 관리
+```tsx
+// src/components/ContactSection.tsx에서 실제 사용 예시
+'use client';
+import { useState } from 'react';
 
-### 6.2 React Hook Form 선택 이유
+export default function ContactSection() {
+  // 상태 선언: [현재값, 설정함수] = useState(초기값)
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    message: '',
+  });
 
-우리 프로젝트에서는 **React Hook Form**을 사용합니다:
-
-#### ✅ 장점들
-- 성능이 우수 (불필요한 리렌더링 최소화)
-- 코드가 간결함
-- TypeScript 완벽 지원
-- 유효성 검사 라이브러리와 쉬운 통합
-
-#### 📝 프로젝트 예시: ContactForm 분석
-
-```typescript
-// src/components/forms/ContactForm.tsx
-'use client'
-import { useForm, Controller } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
-import * as yup from 'yup'
-
-// 1. 폼 데이터 타입 정의
-interface ContactFormData {
-  name: string
-  email: string
-  company: string
-  phone: string
-  message: string
-}
-
-// 2. 유효성 검사 스키마 정의
-const schema = yup.object({
-  name: yup.string()
-    .required('이름을 입력해주세요')
-    .min(2, '이름은 2자 이상이어야 합니다'),
-  email: yup.string()
-    .email('올바른 이메일을 입력해주세요')
-    .required('이메일을 입력해주세요'),
-  message: yup.string()
-    .required('문의내용을 입력해주세요')
-    .min(10, '문의내용은 10자 이상이어야 합니다'),
-})
-
-const ContactForm = () => {
-  // 3. React Hook Form 초기화
-  const {
-    control,      // 폼 컨트롤
-    handleSubmit, // 제출 핸들러
-    reset,        // 폼 리셋 함수
-    formState: { errors }, // 에러 상태
-  } = useForm<ContactFormData>({
-    resolver: yupResolver(schema),  // Yup 스키마 연결
-    defaultValues: {
-      name: '',
-      email: '',
-      company: '',
-      phone: '',
-      message: '',
-    },
-  })
-
-  // 4. 제출 처리 함수
-  const onSubmit = async (data: ContactFormData) => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/contact`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      })
-      
-      if (response.ok) {
-        reset() // 성공 시 폼 초기화
-        // 성공 메시지 표시
-      }
-    } catch (error) {
-      // 에러 처리
-    }
-  }
-
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
   return (
-    <Box component="form" onSubmit={handleSubmit(onSubmit)}>
-      {/* 5. Controller로 입력 필드 제어 */}
-      <Controller
-        name="name"
-        control={control}
-        render={({ field }) => (
-          <TextField
-            {...field}
-            fullWidth
-            label="이름 *"
-            error={!!errors.name}
-            helperText={errors.name?.message}
-          />
-        )}
+    <form>
+      <TextField
+        value={formData.name}    // 현재 상태값 표시
+        onChange={handleInputChange}  // 상태 변경 함수 연결
       />
-      
-      <Button type="submit">문의 보내기</Button>
-    </Box>
-  )
+    </form>
+  );
 }
 ```
 
-### 6.3 코드 단계별 분석
+### **6.2 이벤트 처리**
 
-#### 1단계: 타입 정의
+사용자의 행동(클릭, 입력, 제출 등)에 반응하는 방법입니다:
 
-```typescript
-interface ContactFormData {
-  name: string
-  email: string
-  company: string
-  phone: string
-  message: string
-}
-```
-**목적**: TypeScript로 폼 데이터 구조를 명확히 정의하여 타입 안정성 확보
+```tsx
+// 입력 필드 변경 처리
+const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const { name, value } = event.target;  // 어떤 필드의 어떤 값인지 확인
+  
+  setFormData(prev => ({
+    ...prev,        // 기존 데이터 유지
+    [name]: value   // 해당 필드만 새 값으로 업데이트
+  }));
+};
 
-#### 2단계: 유효성 검사 스키마
-
-```typescript
-const schema = yup.object({
-  name: yup.string().required('이름을 입력해주세요').min(2, '이름은 2자 이상이어야 합니다'),
-  email: yup.string().email('올바른 이메일을 입력해주세요').required('이메일을 입력해주세요'),
-})
-```
-**목적**: 사용자 입력의 유효성을 검사하는 규칙 정의
-
-#### 3단계: useForm Hook 사용
-
-```typescript
-const { control, handleSubmit, reset, formState: { errors } } = useForm<ContactFormData>({
-  resolver: yupResolver(schema),
-  defaultValues: { name: '', email: '', /* ... */ },
-})
-```
-**목적**: 폼 상태 관리와 유효성 검사 연결
-
-#### 4단계: Controller로 필드 제어
-
-```typescript
-<Controller
-  name="name"
-  control={control}
-  render={({ field }) => (
-    <TextField {...field} error={!!errors.name} helperText={errors.name?.message} />
-  )}
-/>
-```
-**목적**: Material-UI TextField와 React Hook Form 연결
-
-### 6.4 상태 관리 패턴
-
-#### 📝 로딩 상태 관리
-
-```typescript
-const [isSubmitting, setIsSubmitting] = useState(false)
-const [submitStatus, setSubmitStatus] = useState<'success' | 'error' | null>(null)
-
-const onSubmit = async (data: ContactFormData) => {
-  setIsSubmitting(true)    // 로딩 시작
-  setSubmitStatus(null)    // 이전 상태 초기화
+// 폼 제출 처리
+const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  event.preventDefault();  // 기본 폼 제출 동작 방지
+  setIsSubmitting(true);   // 로딩 상태 표시
   
   try {
-    // API 호출
-    setSubmitStatus('success')  // 성공 상태
+    // API 호출 또는 데이터 처리
+    console.log('폼 데이터:', formData);
+    
+    // 성공 처리
+    setFormData({ name: '', email: '', message: '' });  // 폼 초기화
   } catch (error) {
-    setSubmitStatus('error')    // 에러 상태
+    // 오류 처리
+    console.error('전송 실패:', error);
   } finally {
-    setIsSubmitting(false)      // 로딩 종료
+    setIsSubmitting(false);  // 로딩 상태 해제
   }
-}
-```
-
-#### 📝 조건부 렌더링
-
-```typescript
-{/* 성공 메시지 */}
-{submitStatus === 'success' && (
-  <Alert severity="success">
-    문의가 성공적으로 전송되었습니다.
-  </Alert>
-)}
-
-{/* 에러 메시지 */}
-{submitStatus === 'error' && (
-  <Alert severity="error">
-    문의 전송 중 오류가 발생했습니다.
-  </Alert>
-)}
-
-{/* 로딩 상태의 버튼 */}
-<Button 
-  disabled={isSubmitting}
-  endIcon={isSubmitting ? <CircularProgress size={20} /> : <SendIcon />}
->
-  {isSubmitting ? '전송 중...' : '문의 보내기'}
-</Button>
+};
 ```
 
 ---
 
-## 📖 Chapter 7: 환경 변수와 설정 관리
+## 🎯 **실습 과제와 응용**
 
-### 7.1 환경 변수가 필요한 이유
+### **📝 기본 실습 과제**
 
-현대적인 웹 애플리케이션은 다양한 환경에서 실행됩니다:
+#### **1. 컴포넌트 수정해보기**
+- `Header.tsx`에서 회사명을 자신의 회사명으로 변경
+- `Footer.tsx`에서 연락처 정보 업데이트
+- 새로운 서비스 카드 추가해보기
 
-1. **개발 환경**: 로컬 개발 서버
-2. **스테이징 환경**: 테스트용 서버  
-3. **운영 환경**: 실제 사용자가 접속하는 서버
+#### **2. Props 연습하기**
+- `HeroSection`에 새로운 Props 추가 (예: 배경 이미지 URL)
+- 서비스 데이터에 가격 정보 추가하기
+- 팀 멤버 정보 확장하기
 
-각 환경마다 다른 설정값(API URL, 데이터베이스 주소, 서비스 키 등)이 필요합니다.
+#### **3. 스타일링 연습**
+- 테마 색상 변경해보기
+- 새로운 Typography 스타일 정의
+- Grid 레이아웃 다양하게 배치해보기
 
-### 7.2 Next.js의 환경 변수 시스템
+### **🔥 도전 과제**
 
-#### 🔑 환경 변수 타입
-
-1. **서버 사이드 전용**: `VARIABLE_NAME`
-2. **클라이언트 사이드 접근 가능**: `NEXT_PUBLIC_VARIABLE_NAME`
-
-#### 📝 프로젝트 예시: 환경 변수 설정
-
+#### **1. 새로운 페이지 만들기**
 ```bash
-# .env.local
-# Google Analytics (클라이언트에서 접근)
-NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
-
-# API 엔드포인트 (클라이언트에서 접근)
-NEXT_PUBLIC_API_URL=http://localhost:3000/api
-
-# 이메일 서비스 (서버에서만 접근)
-MAIL_SERVICE_API_KEY=your_sendgrid_api_key
-MAIL_SERVICE_FROM_EMAIL=noreply@yourdomain.com
+# 블로그 페이지 생성
+src/app/blog/page.tsx
 ```
 
-### 7.3 환경 변수 중앙 관리
-
-#### 📝 프로젝트 예시: config.ts
-
-```typescript
-// src/lib/config.ts
-// 클라이언트 사이드에서 접근 가능한 환경 변수
-export const publicConfig = {
-  GA_ID: process.env.NEXT_PUBLIC_GA_ID,
-  API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api',
-  SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
-  NODE_ENV: process.env.NODE_ENV || 'development',
-} as const
-
-// 서버 사이드에서만 접근 가능한 환경 변수
-export const privateConfig = {
-  MAIL_SERVICE_API_KEY: process.env.MAIL_SERVICE_API_KEY,
-  MAIL_SERVICE_FROM_EMAIL: process.env.MAIL_SERVICE_FROM_EMAIL,
-} as const
-```
-
-**중앙 관리의 장점:**
-- 환경 변수 사용 위치를 한눈에 파악
-- 타입 안정성 확보
-- 기본값 설정 용이
-- 리팩토링 시 변경점 최소화
-
-### 7.4 실제 사용 예시
-
-#### 📝 클라이언트 컴포넌트에서 사용
-
-```typescript
-// src/components/forms/ContactForm.tsx
-'use client'
-import { publicConfig } from '@/lib/config'
-
-const ContactForm = () => {
-  const onSubmit = async (data: ContactFormData) => {
-    // 환경 변수로 API URL 동적 설정
-    const response = await fetch(`${publicConfig.API_URL}/contact`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    })
-  }
-}
-```
-
-#### 📝 서버 컴포넌트에서 사용
-
-```typescript
-// src/app/api/contact/route.ts (API 라우트)
-import { privateConfig } from '@/lib/config'
-
-export async function POST(request: NextRequest) {
-  // 서버에서만 접근 가능한 환경 변수 사용
-  const apiKey = privateConfig.MAIL_SERVICE_API_KEY
-  
-  if (!apiKey) {
-    return NextResponse.json(
-      { error: '이메일 서비스 설정 오류' },
-      { status: 500 }
-    )
-  }
-  
-  // 이메일 발송 로직...
-}
-```
-
-### 7.5 환경별 설정 관리
-
-#### 📁 환경별 파일 구조
-
-```
-프로젝트/
-├── .env                 # 기본 설정 (모든 환경)
-├── .env.local          # 로컬 개발 설정 (git 제외)
-├── .env.development    # 개발 환경 설정
-├── .env.production     # 운영 환경 설정
-└── .env.example        # 환경변수 템플릿 (git 포함)
-```
-
-#### 📝 .env.example (팀원 공유용)
-
+#### **2. 동적 라우팅 구현하기**
 ```bash
-# .env.example - 실제 값은 제거하고 구조만 공유
-# Google Analytics
-NEXT_PUBLIC_GA_ID=G-YOUR_GA_ID_HERE
-
-# API Configuration  
-NEXT_PUBLIC_API_URL=http://localhost:3000/api
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
-
-# Email Service (Server-side only)
-MAIL_SERVICE_API_KEY=your_api_key_here
-MAIL_SERVICE_FROM_EMAIL=your_email@domain.com
+# 개별 서비스 상세 페이지
+src/app/services/[id]/page.tsx
 ```
+
+#### **3. 커스텀 컴포넌트 만들기**
+- 로딩 스피너 컴포넌트
+- 모달 팝업 컴포넌트
+- 이미지 갤러리 컴포넌트
 
 ---
 
-## 📖 Chapter 8: Google Analytics 연동
+## 🚀 **다음 단계 학습 로드맵**
 
-### 8.1 왜 Google Analytics가 필요한가?
+### **🌟 Level 2: 중급 기능**
+- **Framer Motion**: 부드러운 애니메이션 효과
+- **React Hook Form**: 복잡한 폼 검증과 처리
+- **환경 변수**: 개발/운영 환경 분리
+- **API 통신**: 실제 데이터베이스 연결
 
-**Google Analytics**는 웹사이트 방문자의 행동을 분석하는 도구입니다:
+### **🏆 Level 3: 고급 기능**
+- **상태 관리**: Context API, Zustand
+- **성능 최적화**: React.memo, useMemo, useCallback
+- **테스트**: Jest, React Testing Library
+- **배포**: Vercel, AWS, Docker
 
-1. **사용자 이해**: 어떤 페이지가 인기 있는지 파악
-2. **성과 측정**: 마케팅 캠페인 효과 분석
-3. **개선점 발견**: 사용자가 어디서 이탈하는지 추적
-4. **비즈니스 의사결정**: 데이터 기반 전략 수립
-
-### 8.2 Next.js에서 GA 연동 구조
-
-#### 📁 연동 구조 분석
-
-```
-src/
-├── components/common/
-│   └── GoogleAnalytics.tsx     # GA 스크립트 컴포넌트
-├── lib/
-│   └── analytics.ts            # GA 유틸리티 함수들
-├── hooks/
-│   └── useAnalytics.ts         # 페이지 추적 Hook
-└── app/
-    └── layout.tsx              # GA 컴포넌트 사용
-```
-
-### 8.3 Google Analytics 컴포넌트
-
-#### 📝 프로젝트 예시: GoogleAnalytics.tsx
-
-```typescript
-// src/components/common/GoogleAnalytics.tsx
-'use client'  // 클라이언트 컴포넌트 (브라우저 API 사용)
-import Script from 'next/script'
-
-interface GoogleAnalyticsProps {
-  GA_MEASUREMENT_ID: string
-}
-
-const GoogleAnalytics = ({ GA_MEASUREMENT_ID }: GoogleAnalyticsProps) => {
-  return (
-    <>
-      {/* Google Analytics 스크립트 로드 */}
-      <Script
-        strategy="afterInteractive"  // 페이지 로드 후 실행
-        src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
-      />
-      
-      {/* GA 초기화 스크립트 */}
-      <Script
-        id="google-analytics"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: `
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', '${GA_MEASUREMENT_ID}', {
-              page_title: document.title,
-              page_location: window.location.href,
-            });
-          `,
-        }}
-      />
-    </>
-  )
-}
-```
-
-**코드 분석:**
-- `Script` 컴포넌트: Next.js의 최적화된 스크립트 로더
-- `strategy="afterInteractive"`: 페이지가 상호작용 가능해진 후 로드
-- `dangerouslySetInnerHTML`: HTML 문자열을 직접 삽입 (보안 주의 필요)
-
-### 8.4 Analytics 유틸리티 함수
-
-#### 📝 프로젝트 예시: analytics.ts
-
-```typescript
-// src/lib/analytics.ts
-// Google Analytics 이벤트 타입
-export interface GAEvent {
-  action: string
-  category: string
-  label?: string
-  value?: number
-}
-
-// 페이지뷰 추적
-export const trackPageView = (url: string) => {
-  if (typeof window !== 'undefined' && window.gtag) {
-    window.gtag('config', process.env.NEXT_PUBLIC_GA_ID, {
-      page_path: url,
-    })
-  }
-}
-
-// 커스텀 이벤트 추적
-export const trackEvent = ({ action, category, label, value }: GAEvent) => {
-  if (typeof window !== 'undefined' && window.gtag) {
-    window.gtag('event', action, {
-      event_category: category,
-      event_label: label,
-      value: value,
-    })
-  }
-}
-
-// 자주 사용하는 이벤트들
-export const trackButtonClick = (buttonName: string) => {
-  trackEvent({
-    action: 'click',
-    category: 'Button',
-    label: buttonName,
-  })
-}
-
-export const trackFormSubmit = (formName: string) => {
-  trackEvent({
-    action: 'submit',
-    category: 'Form',
-    label: formName,
-  })
-}
-```
-
-### 8.5 실제 사용 예시
-
-#### 📝 ContactForm에서 이벤트 추적
-
-```typescript
-// src/components/forms/ContactForm.tsx
-import { trackEvent, trackFormSubmit } from '@/lib/analytics'
-
-const ContactForm = () => {
-  const onSubmit = async (data: ContactFormData) => {
-    // 폼 제출 시작 이벤트
-    trackEvent({
-      action: 'form_submit_start',
-      category: 'Contact',
-      label: 'Contact Form',
-    })
-
-    try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        body: JSON.stringify(data),
-      })
-
-      if (response.ok) {
-        // 성공 이벤트 추적
-        trackFormSubmit('Contact Form Success')
-        
-        trackEvent({
-          action: 'form_submit_success',
-          category: 'Contact',
-          label: 'Contact Form',
-        })
-      }
-    } catch (error) {
-      // 에러 이벤트 추적
-      trackEvent({
-        action: 'form_submit_error',
-        category: 'Contact',
-        label: 'Contact Form',
-      })
-    }
-  }
-}
-```
-
-#### 📝 버튼 클릭 추적
-
-```typescript
-// 히어로 섹션의 CTA 버튼
-<Button
-  onClick={() => {
-    trackButtonClick('Hero CTA - 시작하기')
-    // 실제 액션 수행
-  }}
->
-  시작하기
-</Button>
-```
-
-### 8.6 자동 페이지 추적
-
-#### 📝 useAnalytics Hook
-
-```typescript
-// src/hooks/useAnalytics.ts
-'use client'
-import { useEffect } from 'react'
-import { usePathname, useSearchParams } from 'next/navigation'
-import { trackPageView } from '@/lib/analytics'
-
-export function useAnalytics() {
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
-
-  useEffect(() => {
-    if (pathname) {
-      const url = pathname + (searchParams?.toString() ? `?${searchParams.toString()}` : '')
-      trackPageView(url)  // 페이지 변경 시 자동 추적
-    }
-  }, [pathname, searchParams])
-}
-```
-
-#### 📝 Layout에서 자동 추적 활성화
-
-```typescript
-// src/app/layout.tsx
-import GoogleAnalytics from '@/components/common/GoogleAnalytics'
-import AnalyticsProvider from '@/components/common/AnalyticsProvider'
-
-export default function RootLayout({ children }) {
-  return (
-    <html>
-      <body>
-        {/* Google Analytics 스크립트 로드 */}
-        {process.env.NEXT_PUBLIC_GA_ID && (
-          <GoogleAnalytics GA_MEASUREMENT_ID={process.env.NEXT_PUBLIC_GA_ID} />
-        )}
-        
-        <ThemeProvider theme={theme}>
-          {/* 자동 페이지 추적 활성화 */}
-          <AnalyticsProvider>
-            {children}
-          </AnalyticsProvider>
-        </ThemeProvider>
-      </body>
-    </html>
-  )
-}
-```
+### **⚡ Level 4: 실무 심화**
+- **SEO 최적화**: meta 태그, sitemap, 구조화 데이터
+- **웹 접근성**: WCAG 가이드라인 준수
+- **성능 모니터링**: Core Web Vitals, 번들 분석
+- **CI/CD**: 자동 배포 파이프라인
 
 ---
 
-## 📖 Chapter 9: 실습 과제와 확장 아이디어
+## 🛠️ **개발 환경 설정 및 실행**
 
-### 9.1 단계별 실습 과제
+### **1. 필수 도구 설치**
+- **Node.js** (v18 이상): JavaScript 런타임
+- **npm**: 패키지 관리자
+- **VS Code**: 코드 에디터 (추천)
 
-#### 🎯 초급 과제 (개념 이해)
+### **2. 프로젝트 시작하기**
+```bash
+# 의존성 설치
+npm install
 
-1. **새로운 페이지 추가**
-   - `src/app/portfolio/page.tsx` 생성
-   - Header의 네비게이션에 Portfolio 링크 추가
-   - 간단한 포트폴리오 목록 표시
+# 개발 서버 실행
+npm run dev
 
-2. **컴포넌트 분리**
-   - HeroSection에서 버튼 부분을 별도 컴포넌트로 분리
-   - Props를 통해 버튼 텍스트와 클릭 이벤트 전달
+# 브라우저에서 확인
+http://localhost:3000
+```
 
-3. **애니메이션 추가**
-   - About 페이지의 팀 멤버 카드에 stagger 애니메이션 적용
-
-#### 🎯 중급 과제 (실무 응용)
-
-1. **중첩 라우팅 구현**
-   ```
-   src/app/services/
-   ├── layout.tsx
-   ├── page.tsx
-   ├── web-development/page.tsx
-   └── consulting/page.tsx
-   ```
-
-2. **커스텀 Hook 만들기**
-   - 폼 입력값을 localStorage에 자동 저장하는 Hook
-   - API 호출 상태를 관리하는 Hook
-
-3. **에러 바운더리 추가**
-   - `error.tsx` 파일을 각 경로에 추가
-   - 사용자 친화적인 에러 페이지 구현
-
-#### 🎯 고급 과제 (최적화)
-
-1. **성능 최적화**
-   - React.memo를 사용한 컴포넌트 메모이제이션
-   - 이미지 lazy loading 구현
-   - Bundle Analyzer로 번들 크기 분석
-
-2. **SEO 최적화**
-   - 동적 메타데이터 생성
-   - JSON-LD 구조화 데이터 추가
-   - sitemap.xml 생성
-
-3. **접근성 개선**
-   - 키보드 네비게이션 지원
-   - ARIA 라벨 추가
-   - 스크린 리더 호환성 확보
-
-### 9.2 확장 아이디어
-
-#### 💡 추가 기능 아이디어
-
-1. **다국어 지원 (i18n)**
-   - next-i18next 라이브러리 사용
-   - 언어 선택기 컴포넌트
-   - 동적 언어 로딩
-
-2. **다크 모드 지원**
-   - Material-UI 테마 동적 변경
-   - 사용자 설정 localStorage 저장
-   - 시스템 설정 자동 감지
-
-3. **실시간 채팅**
-   - Socket.IO 연동
-   - 고객 상담 기능
-   - 실시간 알림
-
-4. **관리자 대시보드**
-   - 문의 내역 관리
-   - 통계 데이터 시각화
-   - 컨텐츠 관리 시스템
-
-### 9.3 학습 진도 체크리스트
-
-#### ✅ 기본 개념 이해도 체크
-
-- [ ] React 컴포넌트 생성 및 사용
-- [ ] JSX 문법 이해
-- [ ] Props 전달 및 타입 정의
-- [ ] useState를 이용한 상태 관리
-- [ ] 이벤트 핸들러 작성
-
-#### ✅ Next.js App Router 이해도 체크
-
-- [ ] 파일 기반 라우팅 이해
-- [ ] layout.tsx의 역할 이해
-- [ ] Server vs Client Component 구분
-- [ ] 환경 변수 사용법
-- [ ] API 라우트 생성
-
-#### ✅ 실무 적용 능력 체크
-
-- [ ] Material-UI 컴포넌트 커스터마이징
-- [ ] Framer Motion 애니메이션 적용
-- [ ] 폼 유효성 검사 구현
-- [ ] API 연동 및 에러 처리
-- [ ] Google Analytics 이벤트 추적
+### **3. 유용한 VS Code 확장 프로그램**
+- **ES7+ React/Redux/React-Native snippets**: React 코드 자동 완성
+- **TypeScript Importer**: import 문 자동 생성
+- **Prettier**: 코드 자동 포매팅
+- **Auto Rename Tag**: HTML/JSX 태그 자동 수정
 
 ---
 
-## 🚀 다음 단계: 9개의 후속 프로젝트
+## 📚 **참고 자료 및 더 알아보기**
 
-### 📋 학습 로드맵
+### **공식 문서**
+- [React 공식 문서](https://react.dev/) - React 기초 개념
+- [Next.js 공식 문서](https://nextjs.org/docs) - App Router 가이드
+- [MUI 공식 문서](https://mui.com/) - 컴포넌트 사용법
+- [TypeScript 핸드북](https://www.typescriptlang.org/docs/) - 타입 정의
 
-1. **Project02: Modern Business Landing** ← 현재 프로젝트
-2. **Project03: E-commerce Product Page** - 상품 상세, 장바구니, 결제
-3. **Project04: Blog with CMS** - 동적 콘텐츠, MDX, Headless CMS
-4. **Project05: Dashboard Analytics** - 차트, 데이터 시각화, 실시간 업데이트
-5. **Project06: Social Media Feed** - 무한 스크롤, 이미지 업로드, 좋아요
-6. **Project07: Real-time Chat App** - WebSocket, 실시간 통신, 알림
-7. **Project08: Weather App with Maps** - 외부 API, 지도 연동, PWA
-8. **Project09: Task Management** - 드래그 앤 드롭, 상태 관리, 협업 기능
-9. **Project10: Multi-tenant SaaS** - 인증, 권한, 멀티테넌시
-10. **Project11: Full-stack Application** - 데이터베이스, 배포, CI/CD
+### **추천 학습 순서**
+1. **JavaScript ES6+ 문법** (구조 분해, 화살표 함수, Promise 등)
+2. **React 기초** (컴포넌트, JSX, Props, State)
+3. **Next.js 라우팅** (페이지 생성, Link 컴포넌트)
+4. **TypeScript 기초** (타입 정의, 인터페이스)
+5. **MUI 컴포넌트** (Grid, Typography, Button 등)
 
-### 🎯 각 프로젝트별 학습 목표
-
-이 프로젝트에서 배운 기본기를 바탕으로, 각 후속 프로젝트에서는 다음과 같은 고급 개념들을 학습하게 됩니다:
-
-- **상태 관리**: Redux Toolkit, Zustand, Jotai
-- **데이터 페칭**: TanStack Query, SWR, GraphQL
-- **인증 & 보안**: NextAuth.js, JWT, OAuth
-- **테스팅**: Jest, Testing Library, E2E 테스트
-- **성능 최적화**: 코드 분할, 이미지 최적화, 캐싱
-- **배포 & 운영**: Vercel, Docker, CI/CD 파이프라인
+### **커뮤니티**
+- **React 한국 사용자 그룹** (Facebook)
+- **Next.js Discord** - 영어 커뮤니티
+- **Stack Overflow** - 기술적 질문과 답변
 
 ---
 
-## 📚 추가 학습 자료
+## 🎉 **마무리**
 
-### 📖 공식 문서
+축하합니다! 이 교재를 통해 다음과 같은 핵심 개념들을 학습했습니다:
 
-- [React 공식 문서](https://react.dev/) - React 개념과 Hook 상세 설명
-- [Next.js 공식 문서](https://nextjs.org/docs) - App Router와 최신 기능
-- [TypeScript 공식 문서](https://www.typescriptlang.org/docs/) - 타입 시스템 이해
-- [Material-UI 공식 문서](https://mui.com/) - 컴포넌트 사용법과 커스터마이징
+### **✅ 달성한 학습 목표**
+- ✅ **레이아웃과 중첩 라우팅**: Next.js App Router 완전 이해
+- ✅ **Server vs Client Components**: 두 컴포넌트 유형의 차이점과 활용법
+- ✅ **컴포넌트 재사용과 Props**: 효율적인 컴포넌트 설계 원칙
 
-### 🎥 추천 학습 영상
+### **💼 실무에서 바로 적용 가능한 기술**
+- Next.js 13+ App Router를 활용한 현대적인 웹 애플리케이션 구조
+- TypeScript를 통한 타입 안전한 개발
+- MUI v6을 활용한 일관된 디자인 시스템 구축
+- 반응형 웹 디자인 구현
 
-- React 기초부터 고급까지 단계별 학습
-- Next.js App Router 마이그레이션 가이드
-- TypeScript와 React의 조합 활용법
-- 현대적인 웹 개발 워크플로우
+### **🔄 지속적인 학습을 위한 제언**
+React와 Next.js 생태계는 빠르게 발전하고 있습니다. 이 교재에서 배운 기초를 바탕으로 계속해서 새로운 기능들을 학습하고 실제 프로젝트에 적용해보세요.
 
-### 📝 실습 가이드
-
-1. **매일 30분 코딩**: 작은 기능이라도 꾸준히 구현
-2. **코드 리뷰**: 동료들과 코드를 공유하고 피드백 받기
-3. **오픈소스 기여**: GitHub에서 React/Next.js 프로젝트 참여
-4. **사이드 프로젝트**: 개인적인 아이디어로 완성도 높은 앱 제작
+**"배운 것을 실제로 만들어보는 것이 가장 중요합니다."**
 
 ---
 
-## 🎉 마무리
+*이 교재는 실무 개발자가 직접 작성한 교육용 자료입니다. 궁금한 점이나 개선 사항이 있다면 언제든 피드백해주세요.*
 
-축하합니다! React와 Next.js의 핵심 개념들을 모두 학습하셨습니다. 이 프로젝트를 통해 다음과 같은 능력을 갖추게 되었습니다:
-
-### ✅ 습득한 기술들
-
-1. **React 기초**: 컴포넌트, Props, State, Hook
-2. **Next.js App Router**: 라우팅, 레이아웃, Server/Client Components
-3. **TypeScript**: 타입 안정성, 인터페이스 정의
-4. **UI 라이브러리**: Material-UI 활용과 커스터마이징
-5. **애니메이션**: Framer Motion으로 UX 개선
-6. **폼 처리**: React Hook Form과 유효성 검사
-7. **환경 설정**: 환경 변수와 배포 준비
-8. **분석 도구**: Google Analytics 연동
-
-### 🚀 다음 학습 방향
-
-이제 여러분은 현대적인 웹 개발자로서 첫걸음을 내디뎠습니다. 다음 9개의 프로젝트를 통해 더욱 전문적인 개발자로 성장하실 수 있습니다.
-
-**"완벽한 프로젝트는 끝난 프로젝트입니다."**
-
-계속해서 코딩하고, 실험하고, 배워나가세요. 여러분의 개발 여정을 응원합니다! 🎯
-
----
-
-*이 README.md는 React와 Next.js 학습을 위한 교육 자료로 제작되었습니다. 질문이나 개선 제안이 있으시면 언제든 문의해 주세요.*
+**Happy Coding! 🚀**

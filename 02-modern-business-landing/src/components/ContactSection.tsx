@@ -16,12 +16,6 @@ import {
   Button,
   Box,
   Alert,
-  FormControl,
-  FormLabel,
-  FormControlLabel,
-  Radio,
-  RadioGroup,
-  Checkbox,
   Divider,
   Paper,
   List,
@@ -126,7 +120,7 @@ export default function ContactSection() {
     },
   });
 
-  // 📝 실시간 폼 값 감시
+  // 🔍 실시간 폼 값 감시
   const watchedValues = watch();
   const messageLength = watchedValues.message?.length || 0;
   const maxMessageLength = 1000;
@@ -216,7 +210,7 @@ export default function ContactSection() {
 
           <Grid container spacing={4}>
             {/* 왼쪽: 연락처 정보 */}
-            <Grid size={{ xs: 12, lg: 5 }}>
+            <Grid xs={12} lg={5}>
               <motion.div variants={staggerItem}>
                 <Typography variant="h4" gutterBottom color="primary.main" sx={{ mb: 3 }}>
                   연락처 정보
@@ -294,7 +288,7 @@ export default function ContactSection() {
             </Grid>
 
             {/* 오른쪽: 연락처 폼 */}
-            <Grid size={{ xs: 12, lg: 7 }}>
+            <Grid xs={12} lg={7}>
               <motion.div variants={staggerItem}>
                 <Typography variant="h4" gutterBottom color="primary.main" sx={{ mb: 3 }}>
                   메시지 보내기
@@ -332,7 +326,7 @@ export default function ContactSection() {
                     <form onSubmit={handleSubmit(onSubmit)} noValidate>
                       <Grid container spacing={3}>
                         {/* 이름과 이메일 */}
-                        <Grid size={{ xs: 12, sm: 6 }}>
+                        <Grid xs={12} sm={6}>
                           <Controller
                             name="name"
                             control={control}
@@ -344,7 +338,7 @@ export default function ContactSection() {
                                 placeholder="홍길동"
                                 error={!!errors.name}
                                 helperText={errors.name?.message}
-                                InputLabelProps={{ shrink: true }}
+                                slotProps={{ inputLabel: { shrink: true } }}
                                 sx={{
                                   '& .MuiOutlinedInput-root': {
                                     '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
@@ -358,7 +352,7 @@ export default function ContactSection() {
                           />
                         </Grid>
 
-                        <Grid size={{ xs: 12, sm: 6 }}>
+                        <Grid xs={12} sm={6}>
                           <Controller
                             name="email"
                             control={control}
@@ -371,14 +365,14 @@ export default function ContactSection() {
                                 placeholder="example@email.com"
                                 error={!!errors.email}
                                 helperText={errors.email?.message}
-                                InputLabelProps={{ shrink: true }}
+                                slotProps={{ inputLabel: { shrink: true } }}
                               />
                             )}
                           />
                         </Grid>
 
                         {/* 전화번호와 회사명 */}
-                        <Grid size={{ xs: 12, sm: 6 }}>
+                        <Grid xs={12} sm={6}>
                           <Controller
                             name="phone"
                             control={control}
@@ -390,13 +384,13 @@ export default function ContactSection() {
                                 placeholder="010-1234-5678"
                                 error={!!errors.phone}
                                 helperText={errors.phone?.message || '선택사항'}
-                                InputLabelProps={{ shrink: true }}
+                                slotProps={{ inputLabel: { shrink: true } }}
                               />
                             )}
                           />
                         </Grid>
 
-                        <Grid size={{ xs: 12, sm: 6 }}>
+                        <Grid xs={12} sm={6}>
                           <Controller
                             name="company"
                             control={control}
@@ -408,14 +402,14 @@ export default function ContactSection() {
                                 placeholder="회사명을 입력해주세요"
                                 error={!!errors.company}
                                 helperText={errors.company?.message || '선택사항'}
-                                InputLabelProps={{ shrink: true }}
+                                slotProps={{ inputLabel: { shrink: true } }}
                               />
                             )}
                           />
                         </Grid>
 
                         {/* 문의 주제 빠른 선택 */}
-                        <Grid size={{ xs: 12 }}>
+                        <Grid xs={12}>
                           <Typography variant="subtitle1" gutterBottom>
                             주요 문의 주제 (빠른 선택)
                           </Typography>
@@ -441,7 +435,7 @@ export default function ContactSection() {
                         </Grid>
 
                         {/* 문의 제목 */}
-                        <Grid size={{ xs: 12 }}>
+                        <Grid xs={12}>
                           <Controller
                             name="subject"
                             control={control}
@@ -453,14 +447,14 @@ export default function ContactSection() {
                                 placeholder="구체적인 문의 제목을 입력해주세요"
                                 error={!!errors.subject}
                                 helperText={errors.subject?.message}
-                                InputLabelProps={{ shrink: true }}
+                                slotProps={{ inputLabel: { shrink: true } }}
                               />
                             )}
                           />
                         </Grid>
 
                         {/* 문의 내용 */}
-                        <Grid size={{ xs: 12 }}>
+                        <Grid xs={12}>
                           <Controller
                             name="message"
                             control={control}
@@ -477,13 +471,15 @@ export default function ContactSection() {
                                   errors.message?.message || 
                                   `${messageLength}/${maxMessageLength}자`
                                 }
-                                InputLabelProps={{ shrink: true }}
-                                FormHelperTextProps={{
-                                  sx: {
-                                    textAlign: 'right',
-                                    color: messageLength > maxMessageLength * 0.9 
-                                      ? 'warning.main' 
-                                      : 'text.secondary'
+                                slotProps={{ 
+                                  inputLabel: { shrink: true },
+                                  formHelperText: {
+                                    sx: {
+                                      textAlign: 'right',
+                                      color: messageLength > maxMessageLength * 0.9 
+                                        ? 'warning.main' 
+                                        : 'text.secondary'
+                                    }
                                   }
                                 }}
                               />
@@ -492,7 +488,7 @@ export default function ContactSection() {
                         </Grid>
 
                         {/* 제출 버튼 */}
-                        <Grid size={{ xs: 12 }}>
+                        <Grid xs={12}>
                           <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
                             <Button
                               type="submit"

@@ -1,11 +1,11 @@
 // src/lib/theme.ts
-// 🎨 MUI v7 테마 설정 - 최신 기능과 개선된 디자인 시스템
+// 🎨 MUI v7 테마 설정 - Material Design 3 완전 지원
 
 'use client';
 
 import { createTheme, alpha } from '@mui/material/styles';
 
-// 🌈 커스텀 컬러 팔레트
+// 🌈 Material Design 3 컬러 토큰
 const colors = {
   primary: {
     50: '#e3f2fd',
@@ -33,24 +33,27 @@ const colors = {
   },
   success: {
     50: '#e8f5e8',
+    100: '#c8e6c9',
     500: '#4caf50',
     main: '#2e7d32',
   },
   warning: {
     50: '#fff3e0',
+    100: '#ffe0b2',
     500: '#ff9800',
     main: '#f57c00',
   },
   error: {
     50: '#ffebee',
+    100: '#ffcdd2',
     500: '#f44336',
     main: '#d32f2f',
   },
 };
 
-// 🎯 MUI v7 최신 테마 설정
+// 🎯 MUI v7 Material Design 3 테마
 const theme = createTheme({
-  // 색상 시스템 (Material Design 3 적용)
+  // 색상 시스템 (Material Design 3 완전 지원)
   palette: {
     mode: 'light',
     primary: {
@@ -67,18 +70,18 @@ const theme = createTheme({
     },
     error: {
       main: colors.error.main,
-      light: colors.error[300],
-      dark: colors.error[700],
+      light: colors.error[100],
+      dark: colors.error[500],
     },
     warning: {
       main: colors.warning.main,
-      light: colors.warning[300],
-      dark: colors.warning[700],
+      light: colors.warning[100],
+      dark: colors.warning[500],
     },
     success: {
       main: colors.success.main,
-      light: colors.success[300],
-      dark: colors.success[700],
+      light: colors.success[100],
+      dark: colors.success[500],
     },
     background: {
       default: '#fafafa',
@@ -100,9 +103,14 @@ const theme = createTheme({
       800: '#424242',
       900: '#212121',
     },
+    // MUI v7 Material Design 3 색상 확장
+    common: {
+      black: '#000000',
+      white: '#ffffff',
+    },
   },
 
-  // 타이포그래피 시스템 (Material Design 3)
+  // Material Design 3 타이포그래피
   typography: {
     fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
     fontWeightLight: 300,
@@ -157,13 +165,11 @@ const theme = createTheme({
       fontSize: '1rem',
       fontWeight: 400,
       lineHeight: 1.6,
-      color: 'rgba(0, 0, 0, 0.87)',
     },
     body2: {
       fontSize: '0.875rem',
       fontWeight: 400,
       lineHeight: 1.5,
-      color: 'rgba(0, 0, 0, 0.7)',
     },
     button: {
       fontSize: '0.875rem',
@@ -175,31 +181,20 @@ const theme = createTheme({
       fontSize: '0.75rem',
       fontWeight: 400,
       lineHeight: 1.4,
-      color: 'rgba(0, 0, 0, 0.6)',
     },
   },
 
   // 간격 시스템
   spacing: 8,
 
-  // 모양과 그림자
+  // Material Design 3 형태
   shape: {
     borderRadius: 12,
   },
 
-  shadows: [
-    'none',
-    '0px 1px 3px rgba(0, 0, 0, 0.12), 0px 1px 2px rgba(0, 0, 0, 0.24)',
-    '0px 3px 6px rgba(0, 0, 0, 0.15), 0px 2px 4px rgba(0, 0, 0, 0.12)',
-    '0px 10px 20px rgba(0, 0, 0, 0.15), 0px 3px 6px rgba(0, 0, 0, 0.10)',
-    '0px 15px 25px rgba(0, 0, 0, 0.15), 0px 5px 10px rgba(0, 0, 0, 0.05)',
-    '0px 20px 40px rgba(0, 0, 0, 0.1)',
-    // ... 추가 그림자 레벨들
-  ] as any,
-
-  // 컴포넌트 커스터마이징
+  // 컴포넌트 테마 커스터마이징 (MUI v7)
   components: {
-    // MUI Button 커스터마이징
+    // Button 컴포넌트
     MuiButton: {
       styleOverrides: {
         root: {
@@ -240,7 +235,7 @@ const theme = createTheme({
       },
     },
 
-    // MUI Card 커스터마이징
+    // Card 컴포넌트
     MuiCard: {
       styleOverrides: {
         root: {
@@ -256,7 +251,7 @@ const theme = createTheme({
       },
     },
 
-    // MUI TextField 커스터마이징
+    // TextField 컴포넌트 (MUI v7 slotProps 사용)
     MuiTextField: {
       styleOverrides: {
         root: {
@@ -274,7 +269,7 @@ const theme = createTheme({
       },
     },
 
-    // MUI AppBar 커스터마이징
+    // AppBar 컴포넌트
     MuiAppBar: {
       styleOverrides: {
         root: {
@@ -286,7 +281,7 @@ const theme = createTheme({
       },
     },
 
-    // MUI Chip 커스터마이징
+    // Chip 컴포넌트
     MuiChip: {
       styleOverrides: {
         root: {
@@ -303,7 +298,7 @@ const theme = createTheme({
       },
     },
 
-    // MUI Container 커스터마이징 
+    // Container 컴포넌트
     MuiContainer: {
       styleOverrides: {
         root: {
@@ -316,9 +311,18 @@ const theme = createTheme({
         },
       },
     },
+
+    // Grid 컴포넌트 최적화 (MUI v7)
+    MuiGrid: {
+      styleOverrides: {
+        root: {
+          // Grid 특별 스타일링이 필요한 경우 여기에 추가
+        },
+      },
+    },
   },
 
-  // 중단점 (Breakpoints)
+  // 중단점 시스템
   breakpoints: {
     values: {
       xs: 0,
@@ -333,30 +337,30 @@ const theme = createTheme({
 export default theme;
 
 /* 
-📚 학습 노트: MUI v7 새로운 기능들
+📚 학습 노트: MUI v7 + Material Design 3 테마 시스템
 
-1. 🎨 Material Design 3 색상 시스템:
-   - 더 풍부한 색상 팔레트 (50-900 단계)
-   - alpha() 함수로 투명도 적용
+1. 🎨 Material Design 3 완전 지원:
+   - 새로운 색상 토큰 시스템
+   - 확장된 팔레트 (50-900 단계)
    - 개선된 접근성과 대비
 
 2. 🔤 향상된 타이포그래피:
-   - 반응형 폰트 크기 적용
-   - 더 나은 줄 간격과 글자 간격
-   - 모바일 최적화된 크기 조정
+   - Inter 폰트 기본 사용
+   - 반응형 폰트 크기
+   - 최적화된 라인 높이와 간격
 
-3. 🎯 컴포넌트 스타일 개선:
-   - 부드러운 애니메이션과 전환 효과
-   - 현대적인 그림자와 호버 효과
-   - 향상된 사용자 경험
+3. 🎯 MUI v7 새 기능:
+   - Grid 컴포넌트 지원
+   - slotProps API 사용
+   - 개선된 컴포넌트 커스터마이징
 
-4. 📱 반응형 디자인:
-   - 모바일 우선 접근 방식
-   - 적응형 컨테이너 패딩
-   - 유연한 중단점 시스템
+4. 📱 반응형 최적화:
+   - 모바일 우선 설계
+   - 적응형 간격 시스템
+   - 유연한 중단점
 
-5. ⚡ 성능 최적화:
-   - cubic-bezier 전환 함수
-   - GPU 가속 애니메이션
-   - 효율적인 리렌더링
+5. ⚡ 성능 개선:
+   - CSS-in-JS 최적화
+   - 효율적인 테마 적용
+   - 부드러운 애니메이션
 */

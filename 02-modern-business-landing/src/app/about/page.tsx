@@ -1,148 +1,183 @@
 // src/app/about/page.tsx
-/**
- * About 페이지 컴포넌트
- */
-import { Metadata } from 'next'
-import { Container, Box, Typography, Grid, Card, CardContent, Avatar } from '@mui/material'
-import Header from '@/components/common/Header'
-import Footer from '@/components/common/Footer'
+// 🏢 회사소개 페이지 - Next.js 라우팅 학습
 
-export const metadata: Metadata = {
-  title: '회사소개 - Modern Business',
-  description: '혁신적인 기술과 창의적인 아이디어로 고객의 성공을 함께 만들어가는 Modern Business를 소개합니다.',
-}
+import { Container, Typography, Box, Grid, Card, CardContent, Avatar } from '@mui/material';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
+// 👥 팀 멤버 데이터
 const teamMembers = [
   {
+    id: 1,
     name: '김철수',
-    position: 'CEO & Founder',
-    bio: '15년간의 IT 업계 경험을 바탕으로 회사를 이끌어가고 있습니다.',
-    avatar: '/images/team/ceo.jpg',
+    position: 'CEO',
+    description: '10년 이상의 IT 경험을 바탕으로 회사를 이끌고 있습니다.',
+    avatar: '👨‍💼',
   },
   {
-    name: '이영희',
+    id: 2,
+    name: '박영희',
     position: 'CTO',
-    bio: '최신 기술 트렌드를 반영한 혁신적인 솔루션을 개발합니다.',
-    avatar: '/images/team/cto.jpg',
+    description: '최신 기술 트렌드를 반영한 솔루션을 개발합니다.',
+    avatar: '👩‍💻',
   },
   {
-    name: '박민수',
-    position: 'Lead Designer',
-    bio: '사용자 중심의 직관적이고 아름다운 디자인을 추구합니다.',
-    avatar: '/images/team/designer.jpg',
+    id: 3,
+    name: '이민수',
+    position: '디자인 팀장',
+    description: '사용자 경험을 최우선으로 생각하는 디자인을 합니다.',
+    avatar: '🎨',
   },
-  {
-    name: '정수민',
-    position: 'Project Manager',
-    bio: '효율적인 프로젝트 관리로 고객 만족을 실현합니다.',
-    avatar: '/images/team/pm.jpg',
-  },
-]
+];
 
 export default function AboutPage() {
   return (
-    <Box component="main">
+    <>
       <Header />
       
-      {/* 페이지 헤더 */}
-      <Box sx={{ py: 8, backgroundColor: 'primary.main', color: 'white' }}>
-        <Container maxWidth="lg">
-          <Typography variant="h2" component="h1" textAlign="center" gutterBottom>
-            회사소개
-          </Typography>
-          <Typography variant="h6" textAlign="center" sx={{ opacity: 0.9 }}>
-            혁신을 통한 성장, 함께하는 미래
-          </Typography>
-        </Container>
-      </Box>
+      <main>
+        {/* 회사 소개 메인 섹션 */}
+        <Box
+          sx={{
+            background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+            py: 8,
+            textAlign: 'center',
+          }}
+        >
+          <Container maxWidth="md">
+            <Typography
+              variant="h2"
+              component="h1"
+              gutterBottom
+              sx={{ color: 'primary.main', mb: 3 }}
+            >
+              회사소개
+            </Typography>
+            
+            <Typography
+              variant="h5"
+              component="p"
+              sx={{ color: 'text.secondary', mb: 4 }}
+            >
+              혁신적인 기술로 더 나은 미래를 만들어갑니다
+            </Typography>
+          </Container>
+        </Box>
 
-      {/* 회사 소개 섹션 */}
-      <Box sx={{ py: 8 }}>
-        <Container maxWidth="lg">
+        {/* 회사 비전 섹션 */}
+        <Container maxWidth="lg" sx={{ py: 8 }}>
           <Grid container spacing={6}>
-            <Grid item xs={12} md={6}>
-              <Typography variant="h3" component="h2" gutterBottom>
-                우리의 미션
-              </Typography>
-              <Typography variant="body1" paragraph sx={{ fontSize: '1.1rem', lineHeight: 1.7 }}>
-                Modern Business는 혁신적인 기술과 창의적인 아이디어로 고객의 
-                비즈니스 성공을 함께 만들어가는 디지털 솔루션 파트너입니다.
-              </Typography>
-              <Typography variant="body1" paragraph sx={{ fontSize: '1.1rem', lineHeight: 1.7 }}>
-                우리는 단순한 서비스 제공을 넘어서 고객의 진정한 파트너로서, 
-                각 고객의 고유한 요구사항을 이해하고 맞춤형 솔루션을 제공합니다.
-              </Typography>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Typography variant="h3" component="h2" gutterBottom>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <Typography variant="h4" gutterBottom color="primary">
                 우리의 비전
               </Typography>
-              <Typography variant="body1" paragraph sx={{ fontSize: '1.1rem', lineHeight: 1.7 }}>
-                디지털 혁신을 통해 더 나은 세상을 만들어가는 것이 우리의 비전입니다. 
-                기술의 발전이 인간의 삶을 더욱 풍요롭게 만들 수 있다고 믿습니다.
+              <Typography variant="body1" paragraph>
+                Modern Business는 최신 웹 기술을 활용하여 고객의 비즈니스 성장을 돕는 
+                전문 IT 솔루션 회사입니다. Next.js, React, TypeScript 등 현대적인 
+                기술 스택을 바탕으로 안정적이고 확장 가능한 웹 애플리케이션을 제공합니다.
               </Typography>
-              <Typography variant="body1" paragraph sx={{ fontSize: '1.1rem', lineHeight: 1.7 }}>
-                지속 가능한 성장과 사회적 책임을 바탕으로 고객, 직원, 그리고 
-                사회 전체에 긍정적인 영향을 미치는 기업이 되겠습니다.
+              <Typography variant="body1">
+                우리는 단순한 기능 구현을 넘어서, 사용자 경험과 비즈니스 가치를 
+                극대화하는 솔루션을 만들어갑니다.
               </Typography>
+            </Grid>
+            
+            <Grid size={{ xs: 12, md: 6 }}>
+              <Typography variant="h4" gutterBottom color="primary">
+                핵심 가치
+              </Typography>
+              <Box sx={{ pl: 2 }}>
+                <Typography variant="h6" gutterBottom>
+                  🚀 혁신 (Innovation)
+                </Typography>
+                <Typography variant="body2" paragraph>
+                  최신 기술 트렌드를 빠르게 적용하여 경쟁력 있는 솔루션을 제공합니다.
+                </Typography>
+                
+                <Typography variant="h6" gutterBottom>
+                  🤝 신뢰 (Trust)
+                </Typography>
+                <Typography variant="body2" paragraph>
+                  투명한 소통과 약속된 일정 준수로 고객의 신뢰를 얻습니다.
+                </Typography>
+                
+                <Typography variant="h6" gutterBottom>
+                  📈 성장 (Growth)
+                </Typography>
+                <Typography variant="body2">
+                  고객과 함께 성장하는 파트너십을 지향합니다.
+                </Typography>
+              </Box>
             </Grid>
           </Grid>
         </Container>
-      </Box>
 
-      {/* 팀 소개 섹션 */}
-      <Box sx={{ py: 8, backgroundColor: 'grey.50' }}>
-        <Container maxWidth="lg">
-          <Typography variant="h3" component="h2" textAlign="center" gutterBottom sx={{ mb: 6 }}>
-            우리 팀
-          </Typography>
-          
-          <Grid container spacing={4}>
-            {teamMembers.map((member, index) => (
-              <Grid item xs={12} sm={6} md={3} key={index}>
-                <Card 
-                  sx={{ 
-                    textAlign: 'center', 
-                    height: '100%',
-                    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-                    '&:hover': {
-                      transform: 'translateY(-8px)',
-                      boxShadow: 8,
-                    }
-                  }}
-                >
-                  <CardContent sx={{ p: 4 }}>
-                    <Avatar
-                      // src={member.avatar} // 실제 이미지가 있을 때 사용
-                      sx={{ 
-                        width: 100, 
-                        height: 100, 
-                        mx: 'auto', 
-                        mb: 2,
-                        fontSize: '2rem',
-                        backgroundColor: 'primary.main'
-                      }}
-                    >
-                      {member.name.charAt(0)}
-                    </Avatar>
-                    <Typography variant="h6" component="h3" gutterBottom>
-                      {member.name}
-                    </Typography>
-                    <Typography variant="subtitle1" color="primary" gutterBottom>
-                      {member.position}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {member.bio}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-        </Container>
-      </Box>
-
-      <Footer />
-    </Box>
-  )
+        {/* 팀 소개 섹션 */}
+        <Box sx={{ bgcolor: 'background.default', py: 8 }}>
+          <Container maxWidth="lg">
+            <Typography
+              variant="h4"
+              component="h2"
+              textAlign="center"
+              gutterBottom
+              sx={{ mb: 6 }}
+            >
+              우리 팀
+            </Typography>
+            
+            <Grid container spacing={4}>
+              {teamMembers.map((member) => (
+                <Grid size={{ xs: 12, md: 4 }} key={member.id}>
+                  <Card
+                    sx={{
+                      height: '100%',
+                      textAlign: 'center',
+                      transition: 'transform 0.2s',
+                      '&:hover': {
+                        transform: 'translateY(-4px)',
+                      },
+                    }}
+                  >
+                    <CardContent sx={{ p: 4 }}>
+                      <Typography variant="h3" sx={{ mb: 2 }}>
+                        {member.avatar}
+                      </Typography>
+                      
+                      <Typography variant="h5" gutterBottom>
+                        {member.name}
+                      </Typography>
+                      
+                      <Typography 
+                        variant="subtitle1" 
+                        color="primary" 
+                        gutterBottom
+                      >
+                        {member.position}
+                      </Typography>
+                      
+                      <Typography variant="body2" color="text.secondary">
+                        {member.description}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              ))}
+            </Grid>
+          </Container>
+        </Box>
+      </main>
+      
+      <Footer companyName="Modern Business" />
+    </>
+  );
 }
+
+/* 
+📚 학습 노트:
+1. Next.js 13+ App Router: /about/page.tsx 파일 구조
+2. 별도 페이지로 분리된 라우팅 구조
+3. Header와 Footer 컴포넌트 재사용
+4. 반응형 Grid 레이아웃 활용
+5. MUI 테마 색상 시스템 활용
+6. 호버 효과로 사용자 경험 향상
+*/

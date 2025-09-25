@@ -1,12 +1,15 @@
 {
   "name": "02-modern-business-landing",
-  "version": "0.1.0",
+  "version": "2.0.0",
   "private": true,
+  "description": "React & Next.js 교육 교재 - 프로젝트 2 업그레이드 (Level 2)",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "next lint --fix",
+    "export": "next build && next export",
+    "deploy": "npm run build && gh-pages -d out"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -17,7 +20,12 @@
     "framer-motion": "^12.23.22",
     "next": "15.5.4",
     "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react-dom": "19.1.0",
+    "react-hook-form": "^7.53.2",
+    "@hookform/resolvers": "^3.9.1",
+    "yup": "^1.4.0",
+    "axios": "^1.7.7",
+    "swr": "^2.2.5"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
@@ -26,6 +34,12 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.5.4",
-    "typescript": "^5"
-  }
+    "typescript": "^5",
+    "gh-pages": "^6.1.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/modern-business-landing-v2.git"
+  },
+  "homepage": "https://your-username.github.io/modern-business-landing-v2"
 }

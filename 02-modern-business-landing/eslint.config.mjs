@@ -1,4 +1,3 @@
-// eslint.config.mjs - 초보자를 위한 느슨한 ESLint 설정
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 import { FlatCompat } from "@eslint/eslintrc";
@@ -11,18 +10,16 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
-  ...compat.extends("next/core-web-vitals"),
+  ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
-    rules: {
-      // 초보자를 위한 느슨한 규칙들
-      "@typescript-eslint/no-unused-vars": "warn",
-      "@typescript-eslint/no-explicit-any": "off",
-      "react-hooks/exhaustive-deps": "warn",
-      "react/no-unescaped-entities": "off",
-      "prefer-const": "warn",
-      "no-console": "off"
-    }
-  }
+    ignores: [
+      "node_modules/**",
+      ".next/**",
+      "out/**",
+      "build/**",
+      "next-env.d.ts",
+    ],
+  },
 ];
 
 export default eslintConfig;

@@ -1,357 +1,328 @@
-아래 내용을 `README.md`로 저장해 사용하세요.
-(React/Next.js 완전 초보자를 대상으로, 이 프로젝트 “하나”만으로 학습 목표를 달성하도록 교재처럼 구성했습니다. 예시는 **모두 본 프로젝트의 실제 코드**에서 발췌했습니다.)
+# Developer's Blog Platform
+
+> **프로젝트 3 — 마크다운 블로그 시스템**
+>
+> 교육 목적: React / Next.js 경험이 없는 부서원을 대상으로 한 학습형 예제 프로젝트
 
 ---
 
-# Developer’s Blog — 교육용 README
+## 목차
 
-> **목표:** React/Next.js 경험이 없는 부서원이 이 프로젝트 하나로
-> ① 동적 라우팅과 파라미터 처리, ② 파일 시스템 기반 데이터 처리, ③ 정적 사이트 생성(SSG)
-> 을 이해하고, 직접 수정/확장할 수 있게 합니다.
+1. 소개
+2. 학습 대상 및 목표
+3. 사전 준비(필수 도구)
+4. 프로젝트 설치 및 실행 방법
+5. 프로젝트 구조(중요 파일 설명)
+6. 주요 개념 및 이론 설명
 
-## 무엇을 만들었나요?
-
-Markdown 파일(`content/posts/*.md`)을 **데이터 소스**로 삼아, Next.js(App Router)로 **정적 블로그 사이트**를 생성합니다.
-
-* 포스트 상세: `/posts/[slug]`
-* 포스트 목록/카테고리/검색
-* 코드 하이라이트(Prism.js)
-* RSS 피드(`/rss.xml`)
-* 읽기 시간 표시
-
-UI는 학습 방해를 줄이기 위해 간단히 구성했고, 카드 렌더링에 **MUI(@mui/material)** 를 사용했습니다.
+   * React 기초
+   * Next.js(App Router) 핵심 개념
+   * Server / Client 컴포넌트
+   * 동적 라우팅([slug])와 generateStaticParams
+   * 파일 시스템 기반 데이터 처리(마크다운)
+   * 정적 사이트 생성(SSG) 흐름
+7. 마크다운 파일 작성 방법(실습 가이드)
+8. 디버깅 & 자주 발생하는 오류와 해결법
+9. 향후 확장 기능(다음 단계)
+10. 기타(테스트, 빌드, 컨트리뷰션)
 
 ---
 
-## 빠른 시작(Quick Start)
+## 1. 소개
+
+이 저장소는 **Next.js + MUI**를 사용한 간단한 마크다운 기반 블로그 플랫폼 예제입니다. 교육용으로 설계되어 있으며, React와 Next.js에 익숙하지 않은 분들도 단계적으로 따라오며 학습할 수 있도록 구성되어 있습니다.
+
+`/src/blog/md` 폴더에 마크다운(`.md`) 파일을 추가하면 자동으로 목록에 노출되고, 각 항목을 클릭하면 마크다운이 HTML로 변환되어 상세 페이지에서 확인할 수 있습니다.
+
+---
+
+## 2. 학습 대상 및 목표
+
+### 대상
+
+* React와 Next.js 경험이 거의 없는 부서원
+* 프론트엔드의 기본 개념(컴포넌트, props, 상태)을 배우고 싶은 분
+* 파일 기반 콘텐츠(마크다운)를 이용한 정적 블로그 제작을 이해하고 싶은 분
+
+### 초기 학습 목표 (이 프로젝트에서 달성할 것들)
+
+* **동적 라우팅과 파라미터 처리** (예: `/blog/[slug]`)
+* **파일 시스템 기반 데이터 처리** (프로젝트 내부의 `src/blog/md/*.md` 파일을 읽음)
+* **정적 사이트 생성(SSG)**: 빌드 시점에 정적 페이지를 생성하는 흐름 이해
+
+---
+
+## 3. 사전 준비 (필수 도구)
+
+* Node.js (v18 이상 권장)
+* npm 또는 pnpm
+* 에디터 (VSCode 권장)
+* Git (PR/버전 관리용)
+
+---
+
+## 4. 프로젝트 설치 및 실행 방법
+
+### 초기 프로젝트 생성 (이미 실행했다면 건너뛰세요)
 
 ```bash
-# 1) 의존성 설치
-npm install
-
-# 2) 개발 서버 실행
-npm run dev
-# http://localhost:3000
+npx create-next-app@latest 03-developer-blog
 ```
 
-> Node LTS(예: 18/20) 사용을 권장합니다. 설치 후 첫 실행에서 오류가 나면
-> `rm -rf node_modules package-lock.json && npm install`로 초기화 후 다시 실행하세요.
+### 필요한 패키지 설치
+
+(프로젝트 루트에서 실행)
+
+```bash
+npm install @mui/material @emotion/react @emotion/styled @mui/icons-material
+npm install gray-matter remark remark-html
+```
+
+**향후 확장(선택)**
+
+```bash
+# 코드 하이라이팅(Prism) 적용 시
+npm install prismjs remark-prism
+# 읽기 시간 계산
+npm install reading-time
+# RSS 피드 생성
+npm install rss
+```
+
+### 개발 서버 실행
+
+```bash
+npm run dev
+# 브라우저에서 http://localhost:3000 접속
+```
+
+### 정적 빌드(SSG 동작 확인)
+
+```bash
+npm run build
+npm run start
+```
 
 ---
 
-## 프로젝트 구조(핵심만)
+## 5. 프로젝트 구조(중요 파일 설명)
+
+아래는 교육용으로 핵심이 되는 파일과 그 역할입니다.
 
 ```
 src/
-├─ app/                    # Next.js App Router 진입점
-│  ├─ layout.tsx           # 전역 레이아웃 + Prism 로드
-│  ├─ page.tsx             # 홈(Featured/Recent/Categories)
-│  ├─ posts/
-│  │  ├─ page.tsx          # 포스트 목록(SSG)
-│  │  └─ [slug]/page.tsx   # 포스트 상세(동적 라우트 + SSG)
-│  ├─ categories/
-│  │  ├─ page.tsx          # 카테고리 목록
-│  │  └─ [category]/page.tsx# 카테고리 상세(동적 라우트)
-│  └─ rss.xml/route.ts     # RSS 피드
-├─ components/
-│  └─ PostCard.tsx         # MUI 카드(클라이언트 컴포넌트)
-├─ lib/
-│  └─ blog.ts              # 파일 시스템 접근/마크다운 파싱 (서버 전용)
-└─ types/
-   └─ blog.ts              # 타입 정의
-content/
-└─ posts/
-   ├─ hello-world.md
-   └─ featured-post.md
+ ┣ app/
+ ┃ ┣ layout.tsx           # 루트 레이아웃 (서버 컴포넌트)
+ ┃ ┣ providers.tsx       # (클라이언트) MUI ThemeProvider를 분리하여 사용
+ ┃ ┣ page.tsx            # 홈 페이지
+ ┃ ┗ blog/
+ ┃   ┣ page.tsx          # 블로그 목록 페이지 (getAllPosts 사용)
+ ┃   ┗ [slug]/page.tsx   # 동적 라우트: 개별 포스트 출력 (generateStaticParams 사용)
+ ┣ components/
+ ┃ ┗ Header.tsx          # 상단 AppBar (MUI)
+ ┣ lib/
+ ┃ ┗ posts.ts            # 마크다운 로드/파싱 유틸 (fs + gray-matter + remark)
+ ┗ blog/
+   ┗ md/                 # 실제 마크다운 파일(.md)이 위치하는 폴더
 ```
 
+### 핵심 파일별 설명 (프로젝트 코드를 기준으로)
+
+* **`src/lib/posts.ts`**
+
+  * `postsDirectory`를 기준으로 `fs.readdirSync()`로 `.md` 파일 목록을 읽습니다.
+  * `gray-matter`로 front-matter(메타데이터: title, date 등)를 분리하고,
+  * `remark().use(html)`를 사용해 마크다운 본문을 HTML로 변환합니다.
+  * 이 모듈의 함수는 서버 환경(Node)에서 실행되어야 합니다(파일 시스템 접근 때문).
+
+* **`src/app/blog/page.tsx`**
+
+  * `getAllPosts()`를 호출하여 포스트 목록을 불러오고, MUI `List`로 렌더링합니다.
+  * 목록 항목은 `/blog/[slug]`로 연결됩니다.
+
+* **`src/app/blog/[slug]/page.tsx`**
+
+  * `generateStaticParams()`를 구현하여 빌드 시점에 어떤 `slug`들을 정적 생성할지 Next.js에게 알려줍니다.
+  * 페이지 컴포넌트는 `params`가 `Promise`로 전달되는 점에 유의하고 `const { slug } = await params;` 와 같이 사용합니다.
+  * `getPostBySlug(slug)`로 마크다운을 파싱한 뒤, `dangerouslySetInnerHTML`로 변환된 HTML을 삽입해 렌더링합니다.
+
+* **`src/app/providers.tsx`**
+
+  * MUI의 `ThemeProvider` 및 `CssBaseline`은 **클라이언트 컴포넌트**로 분리되어야 합니다. (Next.js의 서버/클라이언트 직렬화 제약 때문)
+
 ---
 
-## React/Next 기본 이론 (아주 간단히)
+## 6. 주요 개념 및 이론 설명
 
-* **컴포넌트**: 화면을 만드는 “함수”입니다. `function MyComp() { return <div/> }`
-* **서버 컴포넌트 vs 클라이언트 컴포넌트**
+아래는 React와 Next.js의 기초 개념을 교육용으로 자세히 풀어 설명한 내용입니다.
 
-  * *서버 컴포넌트*: 서버에서만 실행. Node API(`fs`, `path`) 사용 가능. 기본값.
-  * *클라이언트 컴포넌트*: 브라우저에서 실행. `use client` 지시어가 파일 맨 위에 필요. **Node API 사용 불가**.
-* **App Router**: `src/app/` 폴더 구조가 곧 라우팅입니다. 폴더명이 URL이 됩니다.
-* **SSG**: 빌드 시 HTML을 만들어 CDN에서 서비스. 아주 빠르고 저렴합니다.
+### 6.1 React 기초(간단히)
 
-이 프로젝트의 핵심 규칙:
+* **컴포넌트(Component)**: UI를 작고 재사용 가능한 조각으로 나눈 것. 함수형 컴포넌트(예: `function Header() { ... }`)가 현재 표준입니다.
+* **JSX**: JavaScript 내부에 HTML처럼 보이는 문법을 작성하는 방식. `return <div>Hello</div>` 같은 형태.
+* **props**: 부모가 자식 컴포넌트에 전달하는 데이터(읽기 전용).
+* **상태(state)**: 컴포넌트 내부에서 변경 가능한 데이터.
 
-> **Node 내장 모듈(`fs`, `path`)을 사용하는 파일(`lib/blog.ts`)은 “서버 전용(server-only)”이고,
-> 클라이언트 컴포넌트(예: `PostCard`)에서는 절대로 import 하지 않습니다.**
+> 이 프로젝트에서는 상태 관리(예: useState) 사용을 최소화하고 파일 기반 콘텐츠 렌더링에 초점을 맞추어 기초에 익숙해지도록 설계했습니다.
+
+### 6.2 Next.js (App Router) 핵심 개념
+
+* **`src/app` 디렉토리**: App Router의 핵심. `page.tsx`, `layout.tsx` 등의 파일로 라우팅과 레이아웃을 구성합니다.
+* **`layout.tsx`**: 해당 경로 아래의 모든 페이지에 적용되는 레이아웃. 예: 헤더, 푸터, 공통 스타일.
+* **서버 컴포넌트 vs 클라이언트 컴포넌트**:
+
+  * 기본적으로 `app` 디렉토리의 파일은 **서버 컴포넌트**입니다. 서버에서 렌더링되며 Node API(예: `fs`)를 직접 사용 가능합니다.
+  * 클라이언트에서 동작해야 하는 컴포넌트(브라우저 이벤트, useState 사용 등)는 파일 최상단에 `"use client"`를 선언해야 합니다.
+
+**왜 분리하는가?** 서버 컴포넌트는 서버에서 미리 렌더링하여 퍼포먼스를 높이고, 클라이언트 컴포넌트는 사용자 상호작용을 담당합니다. 또한 서버와 클라이언트 간에 전달 가능한 값은 제한됩니다(함수는 전달 불가).
+
+### 6.3 동적 라우팅([slug]) 및 generateStaticParams
+
+* **동적 라우팅**: 폴더명을 대괄호로 감싸면 동적 파라미터가 됩니다. 예: `src/app/blog/[slug]/page.tsx` → `slug`라는 변수로 접근 가능.
+* **`params` 사용법(중요)**: Next.js는 `params`를 `Promise`로 전달할 수 있습니다. 따라서 페이지 컴포넌트에서 `params`를 받을 때는
+
+  ```ts
+  const { slug } = await params;
+  ```
+
+  처럼 `await`로 풀어서 사용해야 합니다.
+* **`generateStaticParams()`**: SSG(정적 생성)를 위해 빌드 시점에 Next.js에 어떤 동적 경로들을 생성할지 알려주는 함수입니다. 이 프로젝트에서는 `getAllPosts()`를 사용해 모든 `.md` 파일의 슬러그 목록을 반환하고, 빌드 시 해당 경로들이 정적으로 생성됩니다.
+
+### 6.4 파일 시스템 기반 데이터 처리(마크다운)
+
+* **마크다운(.md) + front-matter**: 각 글은 마크다운 파일이며 문서 상단에 `---`로 감싼 메타데이터(예: `title`, `date`)를 작성합니다. 이 메타데이터를 `gray-matter`로 파싱합니다.
+* **마크다운 파싱 흐름**:
+
+  1. `fs.readdirSync(postsDirectory)`로 `.md` 파일 목록 조회
+  2. `fs.readFileSync(fullPath, 'utf8')`로 파일 내용 읽기
+  3. `matter(fileContents)`로 front-matter(메타데이터)와 본문 분리
+  4. `remark().use(html).process(content)`로 마크다운을 HTML로 변환
+  5. 페이지에서 `dangerouslySetInnerHTML`로 삽입
+
+**보안 주의**: `dangerouslySetInnerHTML`는 XSS(크로스 사이트 스크립팅) 위험이 있을 수 있습니다. 이 프로젝트는 내부용 교육 예제이므로 간단히 사용하지만, 외부 입력을 허용하는 경우에는 추가적인 sanitization이 필요합니다.
+
+### 6.5 정적 사이트 생성(SSG)의 이해
+
+* **SSG 정의**: 빌드 시점에 HTML 파일을 미리 생성해 배포하는 방식.
+* **장점**: 빠른 응답, CDN 배포에 유리, 비용 효율적
+* **단점**: 빌드 후 콘텐츠 변경 시 재빌드 필요
+
+이 프로젝트는 파일 기반 콘텐츠(로컬 마크다운)를 사용하므로 SSG가 적합합니다. `generateStaticParams()`를 통해 모든 `slug`를 빌드 시점에 생성하면 사용자에게 빠른 정적 페이지 제공이 가능합니다.
 
 ---
 
-## 1. 동적 라우팅과 파라미터 처리 — `[slug]`
+## 7. 마크다운 파일 작성 방법(실습 가이드)
 
-**폴더명이 곧 라우트 변수**입니다. `/posts/[slug]`는 `/posts/hello-world`처럼 접근합니다.
+1. `src/blog/md` 폴더를 생성합니다.
+2. 새 파일을 추가합니다. 예: `post-hello.md`
+3. 파일 상단에 front-matter를 추가합니다:
 
-### 코드: `src/app/posts/[slug]/page.tsx` (발췌)
+```md
+---
+title: "첫 번째 글"
+date: "2025-09-01"
+---
 
-```tsx
-export async function generateStaticParams() {
-  return getAllSlugs().map((slug) => ({ slug }));
-}
+# 본문 제목
 
-export default async function PostDetailPage({ params }: { params: { slug: string } }) {
-  const post = await getPostBySlug(params.slug);
-  if (!post) return notFound();
-  // ...
-}
+내용을 작성하세요.
 ```
 
-* `generateStaticParams()`는 **빌드 시점에 생성할 URL 목록**을 반환합니다. (SSG 핵심)
-* `params.slug`로 현재 페이지의 동적 파라미터를 받습니다.
-* `notFound()`는 404 페이지로 이동시킵니다.
-
-**실습**
-
-1. `content/posts`에 새로운 `.md` 파일을 하나 복사/수정하세요.
-2. 파일명(=slug)을 바꾸고, 다시 `npm run dev`.
-3. `http://localhost:3000/posts/새파일명`으로 접근!
+4. 개발 서버가 실행 중이면 `/blog`에서 목록을 확인하고, 각 글을 클릭하여 내용 확인이 가능합니다.
 
 ---
 
-## 2. 파일 시스템 기반 데이터 처리
+## 8. 디버깅 & 자주 발생하는 오류와 해결법
 
-Markdown 파일을 **직접 읽고 파싱**합니다.
+아래는 이 프로젝트를 교육하면서 자주 만나는 문제들과 해결 방법입니다.
 
-### 코드: `src/lib/blog.ts` (발췌)
+### 8.1 `ENOENT: no such file or directory, scandir '.../src/blog/md'`
+
+**원인**: `src/blog/md` 디렉토리가 없어서 `fs.readdirSync()`가 실패함.
+**해결**: 프로젝트 루트에 `src/blog/md` 폴더를 만들고 `.md` 파일을 추가하세요. 또는 `src/lib/posts.ts`에 `fs.existsSync()` 체크를 추가해 빈 배열을 반환하도록 방어코드를 넣을 수 있습니다.
+
+### 8.2 `Functions cannot be passed directly to Client Components ...` (MUI 관련)
+
+**원인**: 서버 컴포넌트에서 MUI `ThemeProvider` 혹은 `sx`에 함수형 값을 직렬화하여 클라이언트로 전달하려 할 때 발생.
+**해결**:
+
+* `ThemeProvider`는 `"use client"` 선언이 있는 `src/app/providers.tsx` 같은 클라이언트 컴포넌트로 분리하세요.
+* `sx`에 함수 형태(`sx={{ p: (theme) => ... }}`) 대신, 빌드 시점에 값을 계산하거나 `theme.spacing(...)`을 직접 호출한 값을 전달하세요.
+* MUI와 Next.js App Router를 함께 사용할 때는 `component={Link}`보다는 `Link`로 감싼 구조를 권장합니다.
+
+### 8.3 `Route "/blog/[slug]" used params.slug. params should be awaited` 오류
+
+**원인**: App Router에서 `params`가 `Promise`로 전달되므로 동기적으로 `params.slug`에 접근하면 에러 발생.
+**해결**: 페이지 컴포넌트에서 `params`를 `await`으로 해제합니다.
 
 ```ts
-import "server-only";      // 서버 전용!
-import fs from "fs";
-import path from "path";
-import matter from "gray-matter";
-import { remark } from "remark";
-import html from "remark-html";
-import readingTime from "reading-time";
-
-const POSTS_DIR = path.join(process.cwd(), "content", "posts");
-
-function listMarkdownFiles(): string[] {
-  return fs.readdirSync(POSTS_DIR).filter((f) => f.endsWith(".md") || f.endsWith(".mdx"));
-}
-
-export function getAllSlugs(): string[] {
-  return listMarkdownFiles().map((f) => f.replace(/\.mdx?$/, ""));
-}
-
-export async function getPostBySlug(slug: string) {
-  const filePath = path.join(POSTS_DIR, `${slug}.md`);
-  const raw = fs.readFileSync(filePath, "utf8");
-  const { data, content } = matter(raw);        // frontmatter 파싱
-  const processed = await remark().use(html).process(content); // Markdown -> HTML
-  const contentHtml = processed.toString();
-  const rt = readingTime(content);              // 읽기 시간 계산
-  // ...
-}
-```
-
-* **`gray-matter`**: `---` 사이의 frontmatter를 객체로 파싱합니다.
-* **`remark` + `remark-html`**: Markdown 본문을 HTML로 변환합니다.
-* **`reading-time`**: 본문 길이로 읽기 시간을 추정합니다.
-* **`server-only`**: 이 모듈이 절대 브라우저 번들에 포함되지 않도록 강제합니다.
-
-**중요:** `lib/blog.ts`는 **서버에서만 import**하세요.
-클라이언트 컴포넌트(예: `PostCard`)에서 import 하면 `fs 모듈 not found` 오류가 납니다.
-
----
-
-## 3. 정적 사이트 생성(SSG)
-
-이 프로젝트는 목록/상세/카테고리/검색 페이지를 **모두 정적으로 생성**합니다.
-
-* `generateStaticParams()`로 **정적 URL**을 만들고,
-* `export const dynamic = "force-static";`으로 **정적 모드**를 명시합니다.
-
-### 예: 목록 페이지 `src/app/posts/page.tsx`
-
-```tsx
-export const dynamic = "force-static";
-
-export default async function PostsPage() {
-  const posts = await getAllPosts();
-  // ...
-}
-```
-
-### 예: 카테고리 상세 `src/app/categories/[category]/page.tsx`
-
-```tsx
-export async function generateStaticParams() {
-  const posts = await getAllPosts();
-  const set = new Set<string>();
-  posts.forEach((p) => set.add(p.frontMatter.category ?? "uncategorized"));
-  return [...set].map((category) => ({ category }));
-}
-```
-
-**왜 SSG를 쓰나요?**
-
-* Markdown 콘텐츠가 자주 바뀌지 않는 블로그는 **빌드 타임에 HTML을 만들어두면**
-  매우 빠르고 안전합니다. 서버 비용도 줄어듭니다.
-
----
-
-## 구현 기술 별 상세
-
-### ✅ 동적 라우트 `[slug]` & `generateStaticParams`
-
-* 위치: `src/app/posts/[slug]/page.tsx`
-* 역할: 정적 상세 페이지 생성, `params.slug`로 파일 로드
-
-### ✅ 마크다운 파싱 (gray-matter, remark)
-
-* 위치: `src/lib/blog.ts` (`getPostBySlug`)
-* 역할: frontmatter + 본문 HTML 변환
-
-### ✅ 코드 하이라이팅 (Prism.js)
-
-* 위치: `src/app/layout.tsx`
-
-```tsx
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.30.0/themes/prism.min.css" />
-<Script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.30.0/components/prism-core.min.js" strategy="afterInteractive" />
-<Script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.30.0/plugins/autoloader/prism-autoloader.min.js" strategy="afterInteractive" />
-```
-
-* 사용법: Markdown 코드 블록에 언어 표시(\`\`\`ts, \`\`\`js 등)을 붙이면 자동 하이라이트.
-
-### ✅ 카테고리/태그 시스템
-
-* 위치: `src/lib/blog.ts` (`getCategoriesWithCount`)
-* 카테고리 목록: `src/app/categories/page.tsx`
-* 카테고리 상세: `src/app/categories/[category]/page.tsx`
-* **표시**: 목록/상세/카드에서 `#category`, `#tag` 칩/텍스트로 노출
-
-### ✅ 검색 기능 구현
-
-* 위치: `src/app/search/page.tsx` (서버 컴포넌트, GET 폼)
-* 검색 로직: `src/lib/blog.ts` (`searchPosts`)
-
-  * 제목/요약/카테고리/태그 기준으로 필터
-  * **API 불필요**: 서버 컴포넌트가 직접 `lib`를 호출
-
-### ✅ RSS 피드 생성
-
-* 위치: `src/app/rss.xml/route.ts`
-
-```ts
-export async function GET() {
-  const posts = await getAllPosts();
-  // posts -> <item>...</item> 로 직렬화하여 XML 반환
-  return new NextResponse(xml, { headers: { "Content-Type": "application/rss+xml" } });
-}
-```
-
-* 브라우저 `http://localhost:3000/rss.xml`에서 확인
-
-### ✅ 읽기 시간 계산
-
-* 위치: `src/lib/blog.ts` (`reading-time(content)`)
-* 표시: 카드(`PostCard`)와 상세 페이지 상단 메타 정보에서 `xx min read` 텍스트로 노출
-
----
-
-## UI 레이어(MUI)는 어디서 쓰나요?
-
-* `src/components/PostCard.tsx`는 **클라이언트 컴포넌트**입니다.
-
-  * MUI(Card/Chip 등) 사용
-  * **데이터는 부모(서버 컴포넌트)에서 props로 전달**받습니다.
-  * 여기서 `@/lib/blog`를 import하면 안 됩니다. (중요)
-
-```tsx
-"use client";
-import { Card, Chip, ... } from "@mui/material";
-export default function PostCard({ post }: { post: Post }) { /* ... */ }
+const { slug } = await params;
 ```
 
 ---
 
-## 실습 과제(Hands-on)
+## 9. 향후 확장 기능(다음 단계)
 
-1. **새 글 추가**
+아래는 README 상단에 명시된 구현 기술 중 **현재 프로젝트에 적용된 항목**과 **다음 단계에서 구현할 항목**을 구분한 목록입니다.
 
-   * `content/posts/2025-03-01-my-note.md` 파일을 만들고 frontmatter에
-     `title`, `date`, `excerpt`, `category`, `tags`를 채운 뒤 본문을 작성하세요.
-   * 목록/상세/검색/RSS에 반영되는지 확인합니다.
+### 현재 구현된 기술
 
-2. **추천 글(Featured) 지정**
+* **동적 라우트 ([slug])**: `src/app/blog/[slug]/page.tsx`
+* **generateStaticParams**: 빌드 시점에 slug 목록을 생성
+* **마크다운 파싱**: `gray-matter`로 front-matter 파싱, `remark` + `remark-html`로 마크다운 -> HTML 변환
 
-   * 임의 글의 frontmatter에 `featured: true`를 추가.
-   * 홈의 “Featured” 섹션에 노출되는지 확인합니다.
+### 다음 단계(추가 구현 권장)
 
-3. **태그 검색 테스트**
+* **코드 하이라이팅 (Prism.js)**
 
-   * `/search?tags=introduction,sample` 과 같이 접근해 결과를 확인합니다.
-   * `search/page.tsx`에서 GET 폼에 태그를 입력하고 제출해도 됩니다.
+  * 목적: 마크다운 내 코드 블록에 색상 하이라이트 적용
+  * 구현 방향: `remark-prism` 또는 `rehype-prism-plus` 같은 plugin을 `remark` 파이프라인에 추가
+  * 설치: `npm install prismjs remark-prism`
+  * 적용 위치: `src/lib/posts.ts`의 remark 파이프라인
 
-4. **카테고리 추가/변경**
+* **카테고리/태그 시스템**
 
-   * 글의 `category` 값을 바꿔보고 `/categories`와 `/categories/[category]`에서 변화를 확인합니다.
+  * 목적: 포스트를 분류하고 필터링할 수 있게 함
+  * 구현 방향: front-matter에 `tags`, `category` 필드를 추가하고 `getAllPosts()`가 이를 반환하도록 확장
+  * UI: `/blog` 목록에서 필터 드롭다운 혹은 태그 클라우드 추가
 
----
+* **검색 기능**
 
-## 자주 만나는 오류 & 해결
+  * 목적: 제목/본문/태그로 빠르게 검색
+  * 구현 방향: 클라이언트 측 인덱싱(작은 데이터셋) 또는 빌드 시 인덱스 생성 후 클라이언트에서 필터링
+  * 추가 패키지: `fuse.js` 등(옵션)
 
-### ❌ `Module not found: Can't resolve 'fs'`
+* **RSS 피드 생성**
 
-* 원인: 클라이언트 컴포넌트에서 `@/lib/blog`(= fs 사용)을 import함.
-* 해결: `blog.ts`는 **서버 전용**입니다. 클라이언트 파일(예: `PostCard`)에서는 절대 import 금지.
-  데이터는 상위 **서버 컴포넌트**에서 받아서 props로 전달하세요.
+  * 목적: 구독자에게 업데이트 알림 제공
+  * 구현 방향: 빌드 시점에 `rss` 패키지를 이용해 `public/rss.xml` 생성
 
-### ❌ Tailwind/PostCSS 관련 에러
+* **읽기 시간 계산**
 
-* 원인: 예전 설정이 남아 있을 때 발생.
-* 해결: Tailwind 관련 파일/패키지를 제거하고 `postcss.config.mjs`를 비워둡니다(이미 적용됨).
-
-### ❌ 코드 하이라이트가 안 보임
-
-* 원인: Prism CSS/Script가 로드되지 않았거나, 코드 블록 언어 지정 누락.
-* 확인: `layout.tsx`의 `<link>`/`<Script>`가 그대로인지, Markdown 코드 블록에 언어가 있는지 확인.
-
-### ❌ 새 글이 안 보임
-
-* 확인: 파일 확장자 `.md`/`.mdx`인지, frontmatter에 `title`/`date`가 있는지 확인.
-* 빌드/캐시 이슈일 수 있으니 서버를 재시작해 보세요.
+  * 목적: 예상 읽기 시간을 표시하여 사용자 경험 향상
+  * 구현 방향: `reading-time` 패키지 사용 또는 단어 수 기반 직접 계산
 
 ---
 
-## 용어 정리(Glossary)
+## 10. 기타 (테스트, 빌드, 컨트리뷰션)
 
-* **Frontmatter**: Markdown 상단의 `---` 블록. 메타데이터(title, date, tags 등)를 넣습니다.
-* **Slug**: URL 조각을 의미. 파일명(`hello-world.md`)이 곧 slug(`hello-world`).
-* **SSG**: Static Site Generation. 빌드 시 HTML을 생성. 매우 빠르고 저렴.
-* **서버/클라이언트 컴포넌트**: 실행 위치에 따른 분리. 서버는 Node API 가능, 클라이언트는 브라우저 전용.
+* **기능 확인 및 테스트**
 
----
+  * 개발 서버: `npm run dev` → `/blog` 및 `/blog/[slug]` 확인
+  * 정적 빌드: `npm run build` 후 `npm run start`로 실행하여 SSG가 정상 동작하는지 확인
 
-## 다음 단계(확장 아이디어)
+* **README 업데이트**: 기능 추가 시 `README.md`에 사용 방법과 예시 포스트를 갱신하세요.
 
-* 본문 전체 검색(현재는 제목/요약/카테고리/태그 기준)
-* Sitemap 생성(`/sitemap.xml`)
-* OG 이미지(소셜 공유 이미지) 자동 생성
-* 카테고리/태그 페이지에 페이지네이션 추가
-* 포스트 수백/수천개일 때 빌드 최적화(부분 빌드/캐싱)
+* **PR 템플릿 예시**: PR 제출 시 아래 항목을 포함하면 검토에 도움이 됩니다.
+
+  * 작업 내용 요약
+  * 테스트 항목(정상 동작 여부)
+  * 특별한 변경 사항(마이그레이션, 환경변수 등)
 
 ---
 
-## 체크리스트(학습 목표 달성 확인)
+## 맺음말
 
-* [ ] `[slug]` 동적 라우팅을 설명할 수 있다.
-* [ ] `generateStaticParams`가 무엇이며 언제 호출되는지 말할 수 있다.
-* [ ] Markdown(frontmatter 포함)을 `gray-matter`로 파싱하고 `remark`로 HTML 변환하는 과정을 이해했다.
-* [ ] `server-only`의 필요성과 클라이언트/서버 컴포넌트 분리를 설명할 수 있다.
-* [ ] 카테고리/태그/검색/RSS/읽기 시간 기능이 어디에 구현되어 있는지 찾을 수 있다.
-* [ ] 내 글을 추가/수정하고, 목록/상세/검색/RSS에 반영되는 것을 확인했다.
+이 문서는 교육용으로 실습하면서 React와 Next.js의 기초를 이해하도록 돕기 위해 작성되었습니다. 처음에는 어렵게 느껴질 수 있지만, 단계별로 파일을 수정하고 포스트를 추가해보면 Next.js의 서버/클라이언트 분리, 정적 생성 흐름, 파일 기반 데이터 처리 등의 개념이 빠르게 체득됩니다.
 
----
-
-> **마지막 팁**
-> 이 프로젝트는 “콘텐츠가 파일 시스템에 있는” 전형적인 **정적 블로그** 예제입니다.
-> 사내 문서/튜토리얼/기술 노트 등에도 같은 패턴을 적용할 수 있습니다.
-> 꼭 기능을 더하지 말고, **폴더 구조/데이터 흐름/서버-클라이언트 경계**를 확실히 이해하는 데 집중해 주세요.
+필요하시면 다음 단계에서 **Prism 코드 하이라이팅 적용 예시**, **태그/카테고리 확장**, **검색 UI 구현** 중 하나를 실제 코드로 확장해서 만들어 드리겠습니다.

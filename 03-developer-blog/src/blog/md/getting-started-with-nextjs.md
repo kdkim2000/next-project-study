@@ -2,8 +2,8 @@
 title: "Next.js 시작하기"
 date: "2024-01-15"
 category: "Frontend"
-tags: ["Next.js", "React", "Tutorial"]
-excerpt: "Next.js의 기본 개념과 시작 방법을 알아봅시다."
+keywords: ["Next.js", "React", "Tutorial"]
+description: "Next.js의 기본 개념과 시작 방법을 알아봅시다."
 ---
 
 # Next.js 시작하기

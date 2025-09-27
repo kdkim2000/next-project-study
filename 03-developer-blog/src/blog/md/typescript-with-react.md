@@ -2,8 +2,8 @@
 title: "TypeScript와 React"
 date: "2024-01-25"
 category: "Development"
-tags: ["TypeScript", "React", "Type Safety"]
-excerpt: "TypeScript를 React와 함께 사용하는 방법을 알아봅시다."
+keywords: ["TypeScript", "React", "Type Safety"]
+description: "TypeScript를 React와 함께 사용하는 방법을 알아봅시다."
 ---
 
 # TypeScript와 React

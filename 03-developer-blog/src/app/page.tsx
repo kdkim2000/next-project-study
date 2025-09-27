@@ -1,229 +1,95 @@
-// src/app/page.tsx
-// 메인 페이지 컴포넌트 - 모든 기능을 통합하는 최상위 컴포넌트
+import Image from "next/image";
+import styles from "./page.module.css";
 
-'use client';
-
-import React, { useState, useEffect, useCallback } from 'react';
-import {
-  Container,
-  Typography,
-  Box,
-  Alert,
-  CircularProgress,
-  Fab,
-  Snackbar
-} from '@mui/material';
-import { Refresh } from '@mui/icons-material';
-
-// 컴포넌트들 import
-import WeatherSearch from '@/components/WeatherSearch';
-import CurrentWeather from '@/components/CurrentWeather';
-import ForecastCards from '@/components/ForecastCards';
-import WeatherChart from '@/components/WeatherChart';
-
-// 유틸리티 함수들 import
-import { getCurrentWeather, getWeatherForecast, WeatherAPIError } from '@/utils/api';
-import { 
-  cacheWeatherData, 
-  getCachedWeatherData, 
-  setLastLocation 
-} from '@/utils/storage';
-
-// 타입 import
-import type { WeatherData, WeatherForecast } from '@/types/weather';
-
-export default function WeatherDashboard() {
-  // 상태 관리
-  const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
-  const [forecastData, setForecastData] = useState<WeatherForecast | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [currentLocation, setCurrentLocation] = useState<string>('');
-  const [lastUpdateTime, setLastUpdateTime] = useState<Date | null>(null);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-
-  // 실시간 업데이트를 위한 인터벌 ID
-  const [updateInterval, setUpdateInterval] = useState<NodeJS.Timeout | null>(null);
-
-  // 날씨 데이터를 가져오는 함수
-  const fetchWeatherData = useCallback(async (location: string, useCache: boolean = true) => {
-    if (!location.trim()) return;
-
-    setLoading(true);
-    setError(null);
-
-    try {
-      // 캐시된 데이터 확인 (useCache가 true일 때만)
-      if (useCache) {
-        const cachedData = getCachedWeatherData(location);
-        if (cachedData) {
-          setWeatherData(cachedData);
-          setCurrentLocation(location);
-          setLastUpdateTime(new Date());
-          setSnackbarMessage('캐시된 데이터를 로드했습니다.');
-          setSnackbarOpen(true);
-        }
-      }
-
-      // 현재 날씨와 예보 데이터를 동시에 가져오기
-      const [currentWeatherResponse, forecastResponse] = await Promise.all([
-        getCurrentWeather(location),
-        getWeatherForecast(location)
-      ]);
-
-      // 데이터 설정
-      setWeatherData(currentWeatherResponse);
-      setForecastData(forecastResponse);
-      setCurrentLocation(location);
-      setLastUpdateTime(new Date());
-
-      // 데이터 캐싱
-      cacheWeatherData(location, currentWeatherResponse);
-      setLastLocation(location);
-
-      // 성공 메시지
-      setSnackbarMessage('날씨 정보가 업데이트되었습니다.');
-      setSnackbarOpen(true);
-
-    } catch (err) {
-      console.error('Weather fetch error:', err);
-      
-      if (err instanceof WeatherAPIError) {
-        setError(err.message);
-      } else {
-        setError('날씨 정보를 가져오는 중 오류가 발생했습니다.');
-      }
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  // 자동 새로고침 설정 (10분마다)
-  useEffect(() => {
-    if (currentLocation && weatherData) {
-      // 기존 인터벌 제거
-      if (updateInterval) {
-        clearInterval(updateInterval);
-      }
-
-      // 새로운 인터벌 설정 (10분 = 600,000ms)
-      const interval = setInterval(() => {
-        fetchWeatherData(currentLocation, false); // 캐시 사용 안함
-      }, 10 * 60 * 1000);
-
-      setUpdateInterval(interval);
-
-      // 컴포넌트 언마운트 시 인터벌 제거
-      return () => {
-        if (interval) {
-          clearInterval(interval);
-        }
-      };
-    }
-  }, [currentLocation, weatherData, fetchWeatherData]);
-
-  // 수동 새로고침 함수
-  const handleRefresh = () => {
-    if (currentLocation) {
-      fetchWeatherData(currentLocation, false); // 캐시 사용 안함
-    }
-  };
-
-  // 위치 선택 핸들러
-  const handleLocationSelect = (location: string) => {
-    fetchWeatherData(location, true); // 캐시 사용
-  };
-
-  // 스낵바 닫기 핸들러
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
-  };
-
+export default function Home() {
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
-      {/* 헤더 */}
-      <Box sx={{ textAlign: 'center', mb: 4 }}>
-        <Typography variant="h3" component="h1" gutterBottom sx={{ fontWeight: 'bold' }}>
-          Weather Dashboard Pro
-        </Typography>
-        <Typography variant="h6" color="text.secondary">
-          실시간 날씨 정보와 7일 예보를 확인하세요
-        </Typography>
-        {lastUpdateTime && (
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-            마지막 업데이트: {lastUpdateTime.toLocaleString('ko-KR')}
-          </Typography>
-        )}
-      </Box>
+    <div className={styles.page}>
+      <main className={styles.main}>
+        <Image
+          className={styles.logo}
+          src="/next.svg"
+          alt="Next.js logo"
+          width={180}
+          height={38}
+          priority
+        />
+        <ol>
+          <li>
+            Get started by editing <code>src/app/page.tsx</code>.
+          </li>
+          <li>Save and see your changes instantly.</li>
+        </ol>
 
-      {/* 검색 컴포넌트 */}
-      <WeatherSearch onLocationSelect={handleLocationSelect} loading={loading} />
-
-      {/* 에러 표시 */}
-      {error && (
-        <Alert 
-          severity="error" 
-          sx={{ mb: 3 }} 
-          onClose={() => setError(null)}
+        <div className={styles.ctas}>
+          <a
+            className={styles.primary}
+            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Image
+              className={styles.logo}
+              src="/vercel.svg"
+              alt="Vercel logomark"
+              width={20}
+              height={20}
+            />
+            Deploy now
+          </a>
+          <a
+            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.secondary}
+          >
+            Read our docs
+          </a>
+        </div>
+      </main>
+      <footer className={styles.footer}>
+        <a
+          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
+          target="_blank"
+          rel="noopener noreferrer"
         >
-          {error}
-        </Alert>
-      )}
-
-      {/* 로딩 표시 */}
-      {loading && (
-        <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
-          <CircularProgress size={50} />
-        </Box>
-      )}
-
-      {/* 날씨 데이터 표시 */}
-      {weatherData && !loading && (
-        <>
-          {/* 현재 날씨 */}
-          <CurrentWeather weatherData={weatherData} />
-
-          {/* 일기예보 카드 */}
-          {forecastData && (
-            <>
-              <ForecastCards forecastData={forecastData.forecast.forecastday} />
-              
-              {/* 날씨 차트 */}
-              <Box sx={{ mt: 3 }}>
-                <WeatherChart forecastData={forecastData.forecast.forecastday} />
-              </Box>
-            </>
-          )}
-        </>
-      )}
-
-      {/* 플로팅 새로고침 버튼 */}
-      {weatherData && (
-        <Fab
-          color="primary"
-          aria-label="refresh"
-          onClick={handleRefresh}
-          disabled={loading}
-          sx={{
-            position: 'fixed',
-            bottom: 16,
-            right: 16,
-            zIndex: 1000,
-          }}
+          <Image
+            aria-hidden
+            src="/file.svg"
+            alt="File icon"
+            width={16}
+            height={16}
+          />
+          Learn
+        </a>
+        <a
+          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
+          target="_blank"
+          rel="noopener noreferrer"
         >
-          <Refresh />
-        </Fab>
-      )}
-
-      {/* 스낵바 알림 */}
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={3000}
-        onClose={handleSnackbarClose}
-        message={snackbarMessage}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-      />
-    </Container>
+          <Image
+            aria-hidden
+            src="/window.svg"
+            alt="Window icon"
+            width={16}
+            height={16}
+          />
+          Examples
+        </a>
+        <a
+          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Image
+            aria-hidden
+            src="/globe.svg"
+            alt="Globe icon"
+            width={16}
+            height={16}
+          />
+          Go to nextjs.org →
+        </a>
+      </footer>
+    </div>
   );
 }

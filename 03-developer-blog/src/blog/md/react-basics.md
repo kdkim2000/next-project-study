@@ -2,8 +2,8 @@
 title: "React 기초 개념"
 date: "2024-01-20"
 category: "Frontend"
-tags: ["React", "JavaScript", "Components"]
-excerpt: "React의 핵심 개념인 컴포넌트와 JSX를 살펴봅시다."
+keywords: ["React", "JavaScript", "Components"]
+description: "React의 핵심 개념인 컴포넌트와 JSX를 살펴봅시다."
 ---
 
 # React 기초 개념

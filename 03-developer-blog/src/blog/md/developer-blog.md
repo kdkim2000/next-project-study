@@ -2,8 +2,8 @@
 title: "Next.js Blog 만들기"
 date: "2025-01-15"
 category: "Frontend"
-tags: ["Next.js", "React", "Tutorial"]
-excerpt: "Developer’s Blog "
+keywords: ["Next.js", "React", "Tutorial"]
+description: "Developer’s Blog "
 ---
 
 # Developer’s Blog — 교육용 README

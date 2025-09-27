@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "lint:fix": "next lint --fix",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -16,7 +18,10 @@
     "framer-motion": "^12.23.22",
     "next": "15.5.4",
     "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react-dom": "19.1.0",
+    "react-hook-form": "^7.53.0",
+    "yup": "^1.4.0",
+    "@hookform/resolvers": "^3.9.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

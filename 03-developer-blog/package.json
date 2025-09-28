@@ -6,7 +6,16 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "next lint",
+    "lint:fix": "next lint --fix",
+    "type-check": "tsc --noEmit",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "export": "next build",
+    "deploy": "npm run export && touch out/.nojekyll",
+    "analyze": "cross-env ANALYZE=true npm run build",
+    "clean": "rimraf .next out"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -35,5 +44,8 @@
     "eslint": "^9",
     "eslint-config-next": "15.5.4",
     "typescript": "^5.9.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

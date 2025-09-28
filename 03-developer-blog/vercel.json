@@ -1,0 +1,79 @@
+{
+  "version": 2,
+  "name": "blog-markdown-system",
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/next"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/rss.xml",
+      "dest": "/api/rss.xml"
+    },
+    {
+      "src": "/sitemap.xml", 
+      "dest": "/api/sitemap.xml"
+    }
+  ],
+  "env": {
+    "NEXT_PUBLIC_BASE_URL": "@next_public_base_url"
+  },
+  "build": {
+    "env": {
+      "NEXT_PUBLIC_BASE_URL": "@next_public_base_url"
+    }
+  },
+  "headers": [
+    {
+      "source": "/rss.xml",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/xml"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, s-maxage=3600, stale-while-revalidate=86400"
+        }
+      ]
+    },
+    {
+      "source": "/sitemap.xml",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/xml"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, s-maxage=3600, stale-while-revalidate=86400"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "origin-when-cross-origin"
+        }
+      ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/blog/sitemap.xml",
+      "destination": "/sitemap.xml"
+    }
+  ]
+}
